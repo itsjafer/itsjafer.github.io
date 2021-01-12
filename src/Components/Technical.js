@@ -32,7 +32,7 @@ class Technical extends Component {
           <p>
             {' '}
             Here is a
-            <a href="Resume.pdf" target="_blank" rel="noopener noreferrer"> direct link to my resume;</a>
+            <a href="Jafer_Haider_Resume.pdf" target="_blank" rel="noopener noreferrer"> direct link to my resume;</a>
             {' '}
             Ahead of my graduation in 2021, I'm currently looking for new grad opportunities!
             {' '}
@@ -40,7 +40,7 @@ class Technical extends Component {
 
           <SizeMe>
               {({ size }) => (
-                <Document file={"Resume.pdf"}>
+                <Document file={"Jafer_Haider_Resume.pdf"}>
                   <Page pageNumber={1}  onLoadSuccess={this.removeTextLayerOffset} width={size.width ? size.width : 1} />
                 </Document>
               )}

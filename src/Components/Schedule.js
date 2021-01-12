@@ -21,7 +21,7 @@ class Schedule extends Component {
                 <li>BU111 - Business Environment</li>
                 <li>EC120 - Microeconomics</li>
                 <li>CS135 - Functional Programming</li>
-                <li>MATH135 - Algebra (proofs)</li>
+                <li>MATH135 - Proofs</li>
                 <li>MATH137 - Calculus I</li>
               </ul>
             </div>
@@ -156,11 +156,11 @@ class Schedule extends Component {
             <div className="term">
               <h3>5A: Winter 2021</h3>
               <ul>
-                <li>Elective</li>
-                <li>BU4?? - Elective</li>
-                <li>BU4?? - Elective</li>
+                <li>SDS131R - Intro to Political Ideologies</li>
+                <li>BU493V - Investment Strategies</li>
                 <li>BU491 - Policy 2</li>
                 <li>CS451 - Data-Intensive Distributed Computing</li>
+                <li>CS486 - Artificial Intelligence</li>
               </ul>
             </div>
             <div className="term">
@@ -177,8 +177,8 @@ class Schedule extends Component {
                 <li>Elective</li>
                 <li>BU4?? - Elective</li>
                 <li>BU4?? - Elective</li>
-                <li>BU491 - Policy 2</li>
-                <li>CS451 - Data-Intensive Distributed Computing</li>
+                <li>BU4?? - Elective</li>
+                <li>CS??? - Elective</li>
               </ul>
             </div>
           </div>
