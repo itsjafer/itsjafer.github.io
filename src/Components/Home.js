@@ -37,7 +37,7 @@ class Home extends Component {
         </p>
 
 
-        <p>If you have any questions about my experiences, education, projects or want to connect about an opportunity, I'd love to <a href="https://linkedin.com/in/itsjafer">connect on LinkedIn</a> or have an <a href="mailto:itsjafer@gmail.com">exchange over email</a>!
+        <p>If you have any questions about my experiences, education, projects or want to connect about an opportunity, I'd love to <a href="https://linkedin.com/in/itsjafer">connect on LinkedIn</a>. If you'd like to hop on a call, feel free to <a href="https://calendly.com/itsjafer/coffee-chat"> schedule a meeting on my calendar</a>!
         </p>
 
         <p>You can view the source code for this website and the projects it hosts <a href="https://github.com/itsjafer/itsjafer.github.io">here</a>.</p>
