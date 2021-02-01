@@ -151,7 +151,8 @@ class Parser extends Component {
         </Helmet>
 
         <p><b>How well does your resume get parsed?</b></p>
-
+        
+        <p><b>This tool is currently not working due to changes in the Lever API.</b></p>
         <p>
         This tool uses Lever's resume parsing API to parse resumes. Use this to see how well your resume is read by Application Tracking Systems (ATS) when applying to jobs. Companies that use Lever for job apps include: Figma, Palantir, Netflix, Twitch, Yelp and several others.
         </p>
