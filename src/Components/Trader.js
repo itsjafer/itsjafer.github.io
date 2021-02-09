@@ -109,11 +109,16 @@ class Trader extends Component {
         </Helmet>
         <p>This page is an interface for an algorithmic day trader I'm currently paper testing. On this page, you will see the portfolio performance and current holdings (updated every 15 minutes or on refresh). The algorithm liquidates all positions at market close.</p>        
         
-        <h2>{formattedEquity}</h2>
-        <h4>{change >= 0 ? "+" + formattedChange : "-" + formattedChange} since last close</h4>
-        <h4>{overallChange >= 0 ? "+" + formattedOverall : "-" + formattedOverall} all time</h4>
+        {   equity && (
+            <div>
+                <h2>{formattedEquity}</h2>
+                <h4>{change >= 0 ? "+" + formattedChange : "-" + formattedChange} since last close</h4>
+                <h4>{overallChange >= 0 ? "+" + formattedOverall : "-" + formattedOverall} all time</h4>
+            </div>
+            )
+        }
         <ReactHighcharts config={config}></ReactHighcharts>
-      </div>
+        </div>
     );
   }
 }
