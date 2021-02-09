@@ -16,6 +16,7 @@ import Schedule from './Components/Schedule';
 import Reflection from './Components/Reflection';
 import ShowPredictor from './Components/ShowPredictor';
 import Parser from './Components/Parser';
+import Trader from './Components/Trader';
 import Loonie from './Components/Loonie/Loonie';
 import CS240 from './Courses/CS240.md';
 import BU362 from './Courses/BU362.md';
@@ -62,6 +63,7 @@ class Main extends Component {
                 <div class="dropdown">
                 <label class="dropbtn">Projects</label>
                 <div class="dropdown-content">
+                <NavLink to="/trader">Algo Trader</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/show-predictor">TV Show Recommender</NavLink>
                 <NavLink to="/loonie">Loonie</NavLink>
@@ -79,6 +81,7 @@ class Main extends Component {
             <Route path="/show-predictor" component={withTracker(ShowPredictor)} />
             <Route path="/loonie" component={withTracker(() => <Loonie cookies={cookies} />)} />
             <Route path="/parser" component={withTracker(Parser)} />
+            <Route path="/trader" component={withTracker(Trader)} />
             <Route
               path="/cs240"
               component={withTracker(() => (
