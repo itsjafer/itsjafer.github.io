@@ -15,6 +15,40 @@ class Trader extends Component {
     this.updatePredicate = this.updatePredicate.bind(this);
   }
 
+
+  getSentimentData() {
+
+    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaInfoSentiment";
+    fetch(`${URI}`)
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        let results = data['results'];
+        let trimmed = results.map(item => {
+            return [moment(item['date']).subtract(6, 'h').valueOf(), parseFloat(item['equity'])]
+        })
+        trimmed.sort(function(a,b) { return a[0] > b[0] })
+        const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
+            'symbol': position['symbol'],
+            'profit': position['profit'],
+            'profitPercent': position['profitPercent']
+        })) : [];
+
+        this.setState({
+            equityS: parseFloat(data['equity']),
+            changeS: parseFloat(data['change']),
+            positionsS: data['positions'],
+            dataS: trimmed,
+            limitedPositionsS: limitedPositions
+        })
+    })
+    .catch((e) => {
+        alert(e)
+        console.log(e);
+    });
+  }
+
   getCurrentData() {
 
     const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaInfo";
@@ -65,14 +99,11 @@ class Trader extends Component {
     window.addEventListener('resize', this.updatePredicate);
     this.focus = true;
     this.getCurrentData()
-    this.timer = setInterval(() => {
-        this.getCurrentData()
-    }, 30*1000)
+    this.getSentimentData()
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updatePredicate);
-    clearInterval(this.timer);
   }
 
   onFocus = () => {
@@ -148,13 +179,21 @@ class Trader extends Component {
           title: {
               text: ''
           },
-          series: [{
-              name: 'Portfolio',
+          series: [
+            {
+              name: 'Occurrences',
               data: this.state.data,
               tooltip: {
                   valueDecimals: 2
               }
-          }]
+            },
+            {
+              name: 'Sentiment',
+              data: this.state.dataS,
+              tooltip: {
+                valueDecimals: 2
+              }
+            }]
       };
       const { equity, change, positions, isDesktop, limitedPositions } = this.state;
       const formattedEquity = Trader.formatDollar(equity)
@@ -185,7 +224,7 @@ class Trader extends Component {
         {
             positions && (
                 <div>
-                <h4>Current Holdings</h4>
+                {/* <h4>Current Holdings</h4>
 
                 <ReactTable
                 data={isDesktop ? positions : limitedPositions}
@@ -193,7 +232,7 @@ class Trader extends Component {
                 defaultPageSize={positions.length}
                 showPaginationBottom={false}
                 showPageSizeOptions={false}
-                />
+                /> */}
                 </div>
             )
         }
