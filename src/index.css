@@ -123,12 +123,15 @@ ul.header li {
     padding-left: auto;
     padding-right: auto;
   }
-  .year,.term {
+  .year,.term,.occurrences,.sentiment,.balances {
     float: none;
     margin-left: auto;
     margin-right: auto;
     padding-left: auto;
     padding-right: auto;
+  }
+  .occurrences {
+      color: #368fe2;
   }
 }
 
@@ -148,6 +151,13 @@ ul.header li {
   .react-pdf__Document {
     margin-right: 40px;
   }  
+  .occurrences {
+    float: left;
+    color: #368fe2;
+    }
+    .sentiment {
+        float: right;
+    }
 }
 .baby {
   text-align: center;

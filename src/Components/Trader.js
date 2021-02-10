@@ -26,7 +26,7 @@ class Trader extends Component {
     .then((data) => {
         let results = data['results'];
         let trimmed = results.map(item => {
-            return [moment(item['date']).subtract(6, 'h').valueOf(), parseFloat(item['equity'])]
+            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
         })
         trimmed.sort(function(a,b) { return a[0] > b[0] })
         const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
@@ -59,7 +59,7 @@ class Trader extends Component {
     .then((data) => {
         let results = data['results'];
         let trimmed = results.map(item => {
-            return [moment(item['date']).subtract(6, 'h').valueOf(), parseFloat(item['equity'])]
+            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
         })
         trimmed.sort(function(a,b) { return a[0] > b[0] })
         const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
@@ -192,10 +192,48 @@ class Trader extends Component {
               data: this.state.dataS,
               tooltip: {
                 valueDecimals: 2
-              }
+              },
+            }],
+            navigator: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            rangeSelector: {
+                selected: 1,
+                buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h',
+                title: 'View 1 hour'
+            }, {
+                type: 'hour',
+                count: 12,
+                text: '12h',
+                title: 'View 12 hours'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1d',
+                title: 'View 1 Day'
+            }, {
+                type: 'ytd',
+                text: 'YTD',
+                title: 'View year to date'
+            }, {
+                type: 'year',
+                count: 1,
+                text: '1y',
+                title: 'View 1 year'
+            }, {
+                type: 'all',
+                text: 'All',
+                title: 'View all'
             }]
+            }
       };
-      const { equity, change, positions, isDesktop, limitedPositions } = this.state;
+      const { equity, equityS, changeS, positionS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
       const formattedEquity = Trader.formatDollar(equity)
       const percentChange = ((change * 100 )/ equity).toFixed(2)
       const formattedChange = Trader.formatDollar(change)
@@ -203,6 +241,12 @@ class Trader extends Component {
       const overallPercent = ((overallChange * 100) / equity).toFixed(2)
       const formattedOverall = Trader.formatDollar(overallChange);
 
+      const formattedEquityS = Trader.formatDollar(equityS)
+      const percentChangeS = ((changeS * 100 )/ equityS).toFixed(2)
+      const formattedChangeS = Trader.formatDollar(changeS)
+      const overallChangeS = equityS - 100000;
+      const overallPercentS = ((overallChangeS * 100) / equityS).toFixed(2)
+      const formattedOverallS = Trader.formatDollar(overallChangeS);
     return (
       <div>
         <Helmet>
@@ -210,16 +254,29 @@ class Trader extends Component {
           <meta name="description" content="Algo trader using stock popularity on Reddit"/>
           <link rel="canonical" href="http://itsjafer.com/#/trader" />
         </Helmet>
-        <p>This page is an interface for an algorithmic day trader I'm currently paper testing. On this page, you will see the portfolio performance and current holdings. This is updated every 30 seconds while this page is open and every 15 minutes otherwise. The algorithm liquidates all positions at market close.</p>        
+        <p>This page is a dashboard to monitor performance of two algorithmic day traders I'm currently paper testing. This is updated every 15 minutes or on refresh.</p>
+
+        <p><span style={{"color": "#368fe2"}}><b>Occurrences:</b></span> finds the top 10 most mentioned stocks on reddit and rebalances the portfolio around them every minute</p>
+        <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
         
+        <div className="balances">
         {   equity && (
-            <div>
+            <div className="occurrences">
                 <h2>{formattedEquity}</h2>
-        <h4>{change >= 0 ? "+" + formattedChange : formattedChange} ({percentChange +"%"}) since last close</h4>
+        <h4>{change >= 0 ? "+" + formattedChange : formattedChange} ({percentChange +"%"}) today</h4>
                 <h4>{overallChange >= 0 ? "+" + formattedOverall : formattedOverall} ({overallPercent +"%"}) all time</h4>
             </div>
             )
         }
+        {   equity && (
+            <div className="sentiment">
+                <h2>{formattedEquityS}</h2>
+        <h4>{changeS >= 0 ? "+" + formattedChangeS : formattedChangeS} ({percentChangeS +"%"}) today</h4>
+                <h4>{overallChangeS >= 0 ? "+" + formattedOverallS : formattedOverallS} ({overallPercentS +"%"}) all time</h4>
+            </div>
+            )
+        }
+        </div>
         <ReactHighcharts config={config}></ReactHighcharts>
         {
             positions && (
