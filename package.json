@@ -16,6 +16,7 @@
     "moment": "^2.29.1",
     "muicss": "^0.9.43",
     "prop-types": "^15.6.1",
+    "rc-tabs": "^11.7.3",
     "react": "^16.13.1",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
@@ -32,7 +33,8 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.4.1",
     "react-sizeme": "^2.6.12",
-    "react-table": "^6.11.5"
+    "react-table": "^6.11.5",
+    "react-tabs": "^3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

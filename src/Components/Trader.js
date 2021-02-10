@@ -3,6 +3,8 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import {Helmet} from "react-helmet";
 import moment from 'moment';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 const ReactHighcharts = require('react-highcharts/ReactHighstock'); // Expects that Highcharts was loaded in the code.
 moment().format();
 class Trader extends Component {
@@ -233,7 +235,7 @@ class Trader extends Component {
             }]
             }
       };
-      const { equity, equityS, changeS, positionS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
+      const { equity, equityS, changeS, positionsS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
       const formattedEquity = Trader.formatDollar(equity)
       const percentChange = ((change * 100 )/ equity).toFixed(2)
       const formattedChange = Trader.formatDollar(change)
@@ -268,7 +270,7 @@ class Trader extends Component {
             </div>
             )
         }
-        {   equity && (
+        {   equityS && (
             <div className="sentiment">
                 <h2>{formattedEquityS}</h2>
         <h4>{changeS >= 0 ? "+" + formattedChangeS : formattedChangeS} ({percentChangeS +"%"}) today</h4>
@@ -278,21 +280,42 @@ class Trader extends Component {
         }
         </div>
         <ReactHighcharts config={config}></ReactHighcharts>
-        {
-            positions && (
-                <div>
-                {/* <h4>Current Holdings</h4>
-
-                <ReactTable
-                data={isDesktop ? positions : limitedPositions}
-                columns={isDesktop ? positionColumns : limitedColumns}
-                defaultPageSize={positions.length}
-                showPaginationBottom={false}
-                showPageSizeOptions={false}
-                /> */}
-                </div>
-            )
-        }
+            <h4>Current Holdings</h4>
+            <div className="tabs">
+            <Tabs>
+                <TabList>
+                    <Tab>Occurrences</Tab>
+                    <Tab>Sentiment</Tab>
+                </TabList>
+                <TabPanel>
+                {
+                    positions && (
+                        <ReactTable
+                        data={isDesktop ? positions : limitedPositions}
+                        columns={isDesktop ? positionColumns : limitedColumns}
+                        defaultPageSize={positions.length}
+                        showPaginationBottom={false}
+                        showPageSizeOptions={false}
+                        />
+                        )
+                    }
+                </TabPanel>
+                <TabPanel>
+                {
+                    positionsS &&
+                    (
+                        <ReactTable
+                        data={isDesktop ? positionsS : limitedPositionsS}
+                        columns={isDesktop ? positionColumns : limitedColumns}
+                        defaultPageSize={positionsS.length}
+                        showPaginationBottom={false}
+                        showPageSizeOptions={false}
+                        />
+                        )
+                    }
+                    </TabPanel>
+            </Tabs>
+            </div>
         </div>
     );
   }
