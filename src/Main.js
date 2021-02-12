@@ -66,7 +66,6 @@ class Main extends Component {
                 <NavLink to="/trader">Algo Trader</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/show-predictor">TV Show Recommender</NavLink>
-                <NavLink to="/loonie">Loonie</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Cydia Repo</a>
                 </div>
               </div></li>

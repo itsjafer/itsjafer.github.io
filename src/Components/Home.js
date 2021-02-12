@@ -23,24 +23,19 @@ class Home extends Component {
           respectively.
         </p>
 
-        <p>I&apos;ve got one research assistantship and six internships under my belt including experience at Google, Amazon, Yelp, Vida, and BMO Capital Markets; <a href="/#/technical">check out my resume here</a>!</p>
+        <p>This Summer, I'll be interning at Google within the Cloud Compute team!</p>
         
-        <p>The most popular page on this website, by far, is my <a href="/#/parser">Resume Parser project</a> which is a tool to show how well your resume gets parsed by online job tracking systems (ATS). Chances are, if you've stumbled across my website, you probably came for that project!</p>
-
         <p>
           Apart from all that, I&apos;m a big fan of board games, movies, and TV Shows (for real, I even have a
           <a href="/#/favourites"> list</a>
-          ), I love a good shawarma, and I like to
+          ), I love good shawarma, and I like to
           <a href="/repo"> write tweaks for jailbroken iPhones</a>
           {' '}
           on occasion.
         </p>
-
-
-        <p>If you have any questions about my experiences, education, projects or want to connect about an opportunity, I'd love to <a href="https://linkedin.com/in/itsjafer">connect on LinkedIn</a>. If you'd like to hop on a call, feel free to <a href="https://calendly.com/itsjafer/coffee-chat"> schedule a meeting on my calendar</a>!
+        
+        <p>If you want to connect, we can hop on a call to talk about experiences, education, connect about an opportunity, or just hangout -- <a href="https://calendly.com/itsjafer/coffee-chat"> schedule a coffee chat on my calendar</a>!
         </p>
-
-        <p>You can view the source code for this website and the projects it hosts <a href="https://github.com/itsjafer/itsjafer.github.io">here</a>.</p>
 
       </div>
     );
