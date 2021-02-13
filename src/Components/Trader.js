@@ -240,14 +240,14 @@ class Trader extends Component {
       const percentChange = ((change * 100 )/ equity).toFixed(2)
       const formattedChange = Trader.formatDollar(change)
       const overallChange = equity - 100000;
-      const overallPercent = ((overallChange * 100) / equity).toFixed(2)
+      const overallPercent = ((overallChange * 100) / 100000).toFixed(2)
       const formattedOverall = Trader.formatDollar(overallChange);
 
       const formattedEquityS = Trader.formatDollar(equityS)
       const percentChangeS = ((changeS * 100 )/ equityS).toFixed(2)
       const formattedChangeS = Trader.formatDollar(changeS)
       const overallChangeS = equityS - 100000;
-      const overallPercentS = ((overallChangeS * 100) / equityS).toFixed(2)
+      const overallPercentS = ((overallChangeS * 100) / 100000).toFixed(2)
       const formattedOverallS = Trader.formatDollar(overallChangeS);
     return (
       <div>
