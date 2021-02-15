@@ -5,7 +5,7 @@ import {Helmet} from "react-helmet";
 import moment from 'moment';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-const ReactHighcharts = require('react-highcharts/ReactHighstock'); // Expects that Highcharts was loaded in the code.
+const ReactHighcharts = require('react-highcharts/ReactHighstock'); 
 moment().format();
 class Trader extends Component {
   constructor(props) {
@@ -262,6 +262,9 @@ class Trader extends Component {
         <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
         
         <div className="balances">
+        {
+          !equity && 'Loading...'
+        }
         {   equity && (
             <div className="occurrences">
                 <h2>{formattedEquity}</h2>
@@ -269,6 +272,13 @@ class Trader extends Component {
                 <h4>{overallChange >= 0 ? "+" + formattedOverall : formattedOverall} ({overallPercent +"%"}) all time</h4>
             </div>
             )
+        }
+        {
+          !equityS && (
+            <div className="sentiment">
+                Loading...
+            </div>  
+          )
         }
         {   equityS && (
             <div className="sentiment">

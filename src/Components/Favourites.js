@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-// import Paper from '@material-ui/core/Paper';
-// import Grid from '@material-ui/core/Grid';
 
 const styles = (theme) => ({
   root: {
@@ -23,14 +21,6 @@ class Favourites extends Component {
           {' '}
           enjoy making lists of things that I like so I thought I&apos;d put some of them here. Last updated December 2020.
         </p>
-
-        {/* <div className="root">
-        <Grid container spacing={24}>
-          <Grid item xs={12}>
-            <Paper className="paper">This is a movie</Paper>
-          </Grid>
-        </Grid>
-        </div> */}
         <div className="movies">
           <h3>Movies</h3>
           <ul>
@@ -45,9 +35,11 @@ class Favourites extends Component {
             <li>The Breakfast Club (1985)</li>
             <li>The Goonies (1985)</li>
             <li>Ferris Bueller&apos;s Day Off (1986)</li>
+            <li>The Castle in the Sky (1986)</li>
             <li>Stand by Me (1986)</li>
             <li>Die Hard (1988)</li>
             <li>Big (1988)</li>
+            <li>My Neighbour Totoro (1988)</li>
             <li>Dead Poet&apos;s Society (1989)</li>
             <li>Total Recall (1990)</li>
             <li>Awakenings (1990) </li>
@@ -146,6 +138,7 @@ class Favourites extends Component {
             <li>Tenet (2020)</li>
             <li>Enola Holmes (2020)</li>
             <li>His House (2020)</li>
+            <li>The Social Dilemma (2020)</li>
           </ul>
         </div>
         <div className="shows">
@@ -154,7 +147,7 @@ class Favourites extends Component {
             <li>The Twilight Zone (1959-1964)</li>
             <li>Friends (1994-2004)</li>
             <li>Firefly (2002-2003)</li>
-            <li>Avatar: The Last Airbender (2003-2008)</li>
+            <li>Avatar (2003-2008)</li>
             <li>Arrested Development (2003-2019)</li>
             <li>Lost (2004-2010)</li>
             <li>Deadwood (2004-2006)</li>
@@ -191,7 +184,7 @@ class Favourites extends Component {
             <li>The Haunting of Hill House (2018-)</li>
             <li>Maniac (2018)</li>
             <li>You (2018-)</li>
-            <li>Sabrina (2018-)</li>
+            <li>Sabrina (2018-2021)</li>
             <li>Barry (2018-)</li>
             <li>Altered Carbon (2018-)</li>
             <li>Death, Love, and Robots (2019)</li>

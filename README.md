@@ -2,9 +2,9 @@
 
 This branch has the source code for my personal website. The website is written in ReactJS using React Router.
 
-## Loonie
+## Reddit Algo Trader
 
-Loonie is a financial dashboard built as an extension to my website that uses Plaid API to monitor personal finances. Visit it [here](https://itsjafer.com/#/loonie)
+This project uses the Alpaca API in combination with the Reddit API to high frequency trade based on sentiment from certain subreddits about popular stocks.
 
 ## TV Show Finder
 
