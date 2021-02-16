@@ -123,7 +123,7 @@ ul.header li {
     padding-left: auto;
     padding-right: auto;
   }
-  .year,.term,.occurrences,.sentiment,.balances {
+  .year,.term,.occurrences,.sentiment,.bss {
     float: none;
     margin-left: auto;
     margin-right: auto;
@@ -131,8 +131,21 @@ ul.header li {
     padding-right: auto;
   }
   .occurrences {
+      float: none;
       color: #368fe2;
   }
+  .sentiment {
+      float: none;
+  }
+  .bss {
+      float:none;
+      color: #5ec26a;
+  }
+}
+
+.occurrences, .sentiment, .bss {
+  min-width: 300px;
+  max-width: 300px;
 }
 
 /* here the rules for windows above 900px */
@@ -155,9 +168,13 @@ ul.header li {
     float: left;
     color: #368fe2;
     }
-    .sentiment {
-        float: right;
-    }
+  .bss {
+      float: left;
+      color: #5ec26a;
+  }
+  .sentiment {
+      float: left;
+  }
 }
 .baby {
   text-align: center;

@@ -17,6 +17,37 @@ class Trader extends Component {
     this.updatePredicate = this.updatePredicate.bind(this);
   }
 
+  getBssData() {
+    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getBSSInfo";
+    fetch(`${URI}`)
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        let results = data['results'];
+        let trimmed = results.map(item => {
+            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
+        })
+        trimmed.sort(function(a,b) { return a[0] > b[0] })
+        const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
+            'symbol': position['symbol'],
+            'profit': position['profit'],
+            'profitPercent': position['profitPercent']
+        })) : [];
+
+        this.setState({
+            equityBSS: parseFloat(data['equity']),
+            changeBSS: parseFloat(data['change']),
+            positionsBSS: data['positions'],
+            dataBSS: trimmed,
+            limitedPositionsBSS: limitedPositions
+        })
+    })
+    .catch((e) => {
+        alert(e)
+        console.log(e);
+    });
+  }
 
   getSentimentData() {
 
@@ -102,6 +133,7 @@ class Trader extends Component {
     this.focus = true;
     this.getCurrentData()
     this.getSentimentData()
+    this.getBssData()
   }
 
   componentWillUnmount() {
@@ -181,21 +213,30 @@ class Trader extends Component {
           title: {
               text: ''
           },
-          series: [
-            {
-              name: 'Occurrences',
-              data: this.state.data,
-              tooltip: {
-                  valueDecimals: 2
-              }
-            },
-            {
-              name: 'Sentiment',
-              data: this.state.dataS,
-              tooltip: {
-                valueDecimals: 2
-              },
-            }],
+          series: 
+            [
+                {
+                    name: 'Occurrences',
+                    data: this.state.data,
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                },
+                {
+                    name: 'Sentiment',
+                    data: this.state.dataS,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                },
+                {
+                    name: 'BSS',
+                    data: this.state.dataBSS,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                }
+            ],
             navigator: {
                 enabled: false
             },
@@ -235,7 +276,7 @@ class Trader extends Component {
             }]
             }
       };
-      const { equity, equityS, changeS, positionsS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
+      const { equityBSS, changeBSS, positionsBSS, limitedPositionsBSS, equity, equityS, changeS, positionsS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
       const formattedEquity = Trader.formatDollar(equity)
       const percentChange = ((change * 100 )/ equity).toFixed(2)
       const formattedChange = Trader.formatDollar(change)
@@ -249,6 +290,13 @@ class Trader extends Component {
       const overallChangeS = equityS - 100000;
       const overallPercentS = ((overallChangeS * 100) / 100000).toFixed(2)
       const formattedOverallS = Trader.formatDollar(overallChangeS);
+
+      const formattedEquityBSS = Trader.formatDollar(equityBSS)
+      const percentChangeBSS = ((changeBSS * 100 )/ equityBSS).toFixed(2)
+      const formattedChangeBSS = Trader.formatDollar(changeBSS)
+      const overallChangeBSS = equityBSS - 100000;
+      const overallPercentBSS = ((overallChangeBSS * 100) / 100000).toFixed(2)
+      const formattedOverallBSS = Trader.formatDollar(overallChangeBSS);
     return (
       <div>
         <Helmet>
@@ -256,11 +304,11 @@ class Trader extends Component {
           <meta name="description" content="Algo trader using stock popularity on Reddit"/>
           <link rel="canonical" href="http://itsjafer.com/#/trader" />
         </Helmet>
-        <p>This page is a dashboard to monitor performance of two algorithmic day traders I'm currently paper testing. This is updated every 15 minutes or on refresh.</p>
+        <p>This page is a dashboard to monitor performance of three algorithmic day traders I'm currently paper testing. This is updated every 15 minutes or on refresh.</p>
 
         <p><span style={{"color": "#368fe2"}}><b>Occurrences:</b></span> finds the top 10 most mentioned stocks on reddit and rebalances the portfolio around them every minute</p>
         <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
-        
+        <p><span style={{"color": "#5ec26a"}}><b>BSS</b></span>: Stock selection based on a rather...unique individual.</p>
         <div className="balances">
         {
           !equity && 'Loading...'
@@ -288,6 +336,21 @@ class Trader extends Component {
             </div>
             )
         }
+        {
+          !equityS && (
+            <div className="bss">
+                Loading...
+            </div>  
+          )
+        }
+        {   equityS && (
+            <div className="bss">
+                <h2>{formattedEquityBSS}</h2>
+            <h4>{changeBSS >= 0 ? "+" + formattedChangeBSS : formattedChangeBSS} ({percentChangeBSS +"%"}) today</h4>
+                <h4>{overallChangeBSS >= 0 ? "+" + formattedOverallBSS : formattedOverallBSS} ({overallPercentBSS +"%"}) all time</h4>
+            </div>
+            )
+        }
         </div>
         <ReactHighcharts config={config}></ReactHighcharts>
             <h4>Current Holdings</h4>
@@ -296,6 +359,7 @@ class Trader extends Component {
                 <TabList>
                     <Tab>Occurrences</Tab>
                     <Tab>Sentiment</Tab>
+                    <Tab>BSS</Tab>
                 </TabList>
                 <TabPanel>
                 {
@@ -323,7 +387,21 @@ class Trader extends Component {
                         />
                         )
                     }
-                    </TabPanel>
+                </TabPanel>
+                <TabPanel>
+                {
+                    positionsBSS &&
+                    (
+                        <ReactTable
+                        data={isDesktop ? positionsBSS : limitedPositionsBSS}
+                        columns={isDesktop ? positionColumns : limitedColumns}
+                        defaultPageSize={positionsBSS.length}
+                        showPaginationBottom={false}
+                        showPageSizeOptions={false}
+                        />
+                        )
+                    }
+                </TabPanel>
             </Tabs>
             </div>
         </div>
