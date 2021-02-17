@@ -134,18 +134,10 @@ ul.header li {
       float: none;
       color: #368fe2;
   }
-  .sentiment {
-      float: none;
-  }
   .bss {
       float:none;
       color: #5ec26a;
   }
-}
-
-.occurrences, .sentiment, .bss {
-  min-width: 300px;
-  max-width: 300px;
 }
 
 /* here the rules for windows above 900px */
@@ -163,17 +155,17 @@ ul.header li {
   }
   .react-pdf__Document {
     margin-right: 40px;
-  }  
+  } 
   .occurrences {
     float: left;
     color: #368fe2;
     }
   .bss {
-      float: left;
+      float: right;
       color: #5ec26a;
   }
   .sentiment {
-      float: left;
+      margin:0 auto !important;
   }
 }
 .baby {
@@ -221,6 +213,10 @@ canvas {
   margin: 0;
   font-size: 4.5em;
   font-weight: 100;
+}
+.occurrences, .sentiment, .bss {
+  min-width: 300px !important;
+  max-width: 300px !important;
 }
 .mui-form {
   text-align: center;

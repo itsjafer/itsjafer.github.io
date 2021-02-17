@@ -322,6 +322,21 @@ class Trader extends Component {
             )
         }
         {
+            !equityS && (
+            <div className="bss">
+                Loading...
+            </div>  
+            )
+        }
+        {   equityS && (
+            <div className="bss">
+                <h2>{formattedEquityBSS}</h2>
+            <h4>{changeBSS >= 0 ? "+" + formattedChangeBSS : formattedChangeBSS} ({percentChangeBSS +"%"}) today</h4>
+                <h4>{overallChangeBSS >= 0 ? "+" + formattedOverallBSS : formattedOverallBSS} ({overallPercentBSS +"%"}) all time</h4>
+            </div>
+            )
+        }
+        {
           !equityS && (
             <div className="sentiment">
                 Loading...
@@ -333,21 +348,6 @@ class Trader extends Component {
                 <h2>{formattedEquityS}</h2>
         <h4>{changeS >= 0 ? "+" + formattedChangeS : formattedChangeS} ({percentChangeS +"%"}) today</h4>
                 <h4>{overallChangeS >= 0 ? "+" + formattedOverallS : formattedOverallS} ({overallPercentS +"%"}) all time</h4>
-            </div>
-            )
-        }
-        {
-          !equityS && (
-            <div className="bss">
-                Loading...
-            </div>  
-          )
-        }
-        {   equityS && (
-            <div className="bss">
-                <h2>{formattedEquityBSS}</h2>
-            <h4>{changeBSS >= 0 ? "+" + formattedChangeBSS : formattedChangeBSS} ({percentChangeBSS +"%"}) today</h4>
-                <h4>{overallChangeBSS >= 0 ? "+" + formattedOverallBSS : formattedOverallBSS} ({overallPercentBSS +"%"}) all time</h4>
             </div>
             )
         }
