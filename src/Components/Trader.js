@@ -294,8 +294,8 @@ class Trader extends Component {
       const formattedEquityBSS = Trader.formatDollar(equityBSS)
       const percentChangeBSS = ((changeBSS * 100 )/ equityBSS).toFixed(2)
       const formattedChangeBSS = Trader.formatDollar(changeBSS)
-      const overallChangeBSS = equityBSS - 100000;
-      const overallPercentBSS = ((overallChangeBSS * 100) / 100000).toFixed(2)
+      const overallChangeBSS = equityBSS - 1000;
+      const overallPercentBSS = ((overallChangeBSS * 100) / 1000).toFixed(2)
       const formattedOverallBSS = Trader.formatDollar(overallChangeBSS);
     return (
       <div>
