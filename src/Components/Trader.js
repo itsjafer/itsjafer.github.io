@@ -18,7 +18,7 @@ class Trader extends Component {
   }
 
   getBssData() {
-    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getBSSInfo";
+    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getBSSHistory";
     fetch(`${URI}`)
     .then((response) => {
         return response.json();
@@ -26,7 +26,7 @@ class Trader extends Component {
     .then((data) => {
         let results = data['results'];
         let trimmed = results.map(item => {
-            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
+            return [item[0]*1000, parseFloat(item[1])*100]
         })
         trimmed.sort(function(a,b) { return a[0] > b[0] })
         const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
@@ -51,7 +51,7 @@ class Trader extends Component {
 
   getSentimentData() {
 
-    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaInfoSentiment";
+    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaHistorySentiment";
     fetch(`${URI}`)
     .then((response) => {
         return response.json();
@@ -59,7 +59,7 @@ class Trader extends Component {
     .then((data) => {
         let results = data['results'];
         let trimmed = results.map(item => {
-            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
+            return [item[0]*1000, parseFloat(item[1])]
         })
         trimmed.sort(function(a,b) { return a[0] > b[0] })
         const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
@@ -84,7 +84,7 @@ class Trader extends Component {
 
   getCurrentData() {
 
-    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaInfo";
+    const URI = "https://us-central1-alpacatrader-304216.cloudfunctions.net/getAlpacaHistory";
     fetch(`${URI}`)
     .then((response) => {
         return response.json();
@@ -92,7 +92,7 @@ class Trader extends Component {
     .then((data) => {
         let results = data['results'];
         let trimmed = results.map(item => {
-            return [moment(item['date']).subtract(6, 'h').startOf("minute").valueOf(), parseFloat(item['equity'])]
+            return [item[0]*1000, parseFloat(item[1])]
         })
         trimmed.sort(function(a,b) { return a[0] > b[0] })
         const limitedPositions = data['positions'] ? data['positions'].map((position) => ({
@@ -244,7 +244,7 @@ class Trader extends Component {
                 enabled: false
             },
             rangeSelector: {
-                selected: 1,
+                selected: 2,
                 buttons: [{
                 type: 'hour',
                 count: 1,
@@ -304,11 +304,11 @@ class Trader extends Component {
           <meta name="description" content="Algo trader using stock popularity on Reddit"/>
           <link rel="canonical" href="http://itsjafer.com/#/trader" />
         </Helmet>
-        <p>This page is a dashboard to monitor performance of three algorithmic day traders I'm currently paper testing. This is updated every 15 minutes or on refresh.</p>
+        <p>This page is a dashboard to monitor performance of three algorithmic day traders I'm currently paper testing. <b>Start date: February 9, 2021</b></p>
 
         <p><span style={{"color": "#368fe2"}}><b>Occurrences:</b></span> finds the top 10 most mentioned stocks on reddit and rebalances the portfolio around them every minute</p>
         <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
-        <p><span style={{"color": "#5ec26a"}}><b>BSS</b></span>: Stock selection based on a rather...unique individual.</p>
+        <p><span style={{"color": "#5ec26a"}}><b>BSS</b></span>: Stock selection based on a rather...unique individual (graph is 100x actual value for scaling).</p>
         <div className="balances">
         {
           !equity && 'Loading...'
@@ -322,13 +322,13 @@ class Trader extends Component {
             )
         }
         {
-            !equityS && (
+            !equityBSS && (
             <div className="bss">
                 Loading...
             </div>  
             )
         }
-        {   equityS && (
+        {   equityBSS && (
             <div className="bss">
                 <h2>{formattedEquityBSS}</h2>
             <h4>{changeBSS >= 0 ? "+" + formattedChangeBSS : formattedChangeBSS} ({percentChangeBSS +"%"}) today</h4>
