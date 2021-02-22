@@ -123,7 +123,7 @@ ul.header li {
     padding-left: auto;
     padding-right: auto;
   }
-  .year,.term,.occurrences,.sentiment,.bss {
+  .year,.term,.occurrences,.sentiment,.bss,.rsa {
     float: none;
     margin-left: auto;
     margin-right: auto;
@@ -137,6 +137,10 @@ ul.header li {
   .bss {
       float:none;
       color: #5ec26a;
+  }
+  .rsa {
+      float: none;
+      color: #f7a35c;
   }
 }
 
@@ -165,7 +169,11 @@ ul.header li {
       color: #5ec26a;
   }
   .sentiment {
-      margin:0 auto !important;
+    float: left;
+    }
+  .rsa {
+      float: right;
+      color: #f7a35c;
   }
 }
 .baby {
@@ -214,9 +222,9 @@ canvas {
   font-size: 4.5em;
   font-weight: 100;
 }
-.occurrences, .sentiment, .bss {
-  min-width: 300px !important;
-  max-width: 300px !important;
+.occurrences, .sentiment, .bss, .rsa {
+  min-width: 325px !important;
+  max-width: 325px !important;
 }
 .mui-form {
   text-align: center;
