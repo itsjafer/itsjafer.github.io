@@ -40,11 +40,15 @@ class Trader extends Component {
             let trimmed = null;
             if (i >= 2) {
                 trimmed = results.map(item => {
-                    return [item[0]*1000, parseFloat(item[1])*100]
+                    const equity = parseFloat(item[1])*100
+                    const date = item[0] - 18000
+                    return [date*1000, equity == 0 ? 100000 : equity]
                 })
             } else {
                 trimmed = results.map(item => {
-                    return [item[0]*1000, parseFloat(item[1])]
+                    const equity = parseFloat(item[1])
+                    const date = item[0] - 18000
+                    return [date*1000, equity == 0 ? 100000 : equity]
                 })
             }
             trimmed.sort(function(a,b) { return a[0] > b[0] })
@@ -196,7 +200,7 @@ class Trader extends Component {
                     },
                 },
                 {
-                    name: 'RSA',
+                    name: 'SPY',
                     data: this.state.data && this.state.data.length > 3 && this.state.data[3] ? this.state.data[3] : [],
                     tooltip: {
                         valueDecimals: 2
@@ -210,18 +214,22 @@ class Trader extends Component {
                 enabled: false
             },
             rangeSelector: {
-                selected: 2,
-                buttons: [{
-                type: 'hour',
-                count: 1,
-                text: '1h',
-                title: 'View 1 hour'
-            }, {
+                selected: 1,
+                buttons: 
+                [
+            // {
+            //     type: 'hour',
+            //     count: 1,
+            //     text: '1h',
+            //     title: 'View 1 hour'
+            // }, 
+            {
                 type: 'hour',
                 count: 12,
                 text: '12h',
                 title: 'View 12 hours'
-            }, {
+            }, 
+            {
                 type: 'day',
                 count: 1,
                 text: '1d',
@@ -269,12 +277,12 @@ class Trader extends Component {
           <meta name="description" content="Algo trader using stock popularity on Reddit"/>
           <link rel="canonical" href="http://itsjafer.com/#/trader" />
         </Helmet>
-        <p>This page is a dashboard to monitor performance of four algorithmic day traders I'm currently paper testing. The portfolio opened on February 10, 2021 but all balances were reset on February 23, 2021 after logic changes to the algorithms.</p>
+        <p>This page is a dashboard to monitor performance of three algorithmic day traders I'm currently paper testing. The portfolio opened on February 10, 2021 but all balances were reset on February 23, 2021 after logic changes to the algorithms.</p>
 
         <p><span style={{"color": "#368fe2"}}><b>Occurrences:</b></span> finds the top 10 most mentioned stocks on reddit and rebalances the portfolio around them every minute</p>
         <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
         <p><span style={{"color": "#5ec26a"}}><b>BSS</b></span>: Stock selection based on calls made by <a href="https://twitter.com/buysellshort">@buysellshort</a>.</p>
-        <p><span style={{"color": "#f7a35c"}}><b>RSA</b></span>: Stock selection based on <a href="https://twitter.com/reverseSplitArb"> reverse split arbitrage</a></p>
+        <p><span style={{"color": "#f7a35c"}}><b>SPY</b></span>: A portfolio entirely invested in SPY that occasional makes a few dollars using <a href="https://twitter.com/reverseSplitArb"> reverse split arbitrage</a></p>
         <div>
     
         {
