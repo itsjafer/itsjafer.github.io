@@ -199,6 +199,7 @@ class Favourites extends Component {
             <li>Upload (2020-)</li>
             <li>Mrs. America (2020)</li>
             <li>The Queen's Gambit (2020)</li>
+            <li>Solar Opposites (2020)</li>
           </ul>
         </div>
 

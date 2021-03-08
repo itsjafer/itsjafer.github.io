@@ -41,14 +41,14 @@ class Trader extends Component {
             if (i >= 2) {
                 trimmed = results.map(item => {
                     const equity = parseFloat(item[1])*100
-                    const date = item[0] - 18000
-                    return [date*1000, equity == 0 ? 100000 : equity]
+                    const date = item[0]
+                    return [date*1000, equity <= 20000 ? 100000 : equity]
                 })
             } else {
                 trimmed = results.map(item => {
                     const equity = parseFloat(item[1])
-                    const date = item[0] - 18000
-                    return [date*1000, equity == 0 ? 100000 : equity]
+                    const date = item[0]
+                    return [date*1000, equity <= 20000 ? 100000 : equity]
                 })
             }
             trimmed.sort(function(a,b) { return a[0] > b[0] })
@@ -282,7 +282,7 @@ class Trader extends Component {
         <p><span style={{"color": "#368fe2"}}><b>Occurrences:</b></span> finds the top 10 most mentioned stocks on reddit and rebalances the portfolio around them every minute</p>
         <p><b>Sentiment:</b> finds the top 10 stocks with the highest sentiment rating on reddit and rebalances the portfolio around them every 5 minutes</p>
         <p><span style={{"color": "#5ec26a"}}><b>BSS</b></span>: Stock selection based on calls made by <a href="https://twitter.com/buysellshort">@buysellshort</a>.</p>
-        <p><span style={{"color": "#f7a35c"}}><b>SPY</b></span>: A portfolio entirely invested in SPY that occasional makes a few dollars using <a href="https://twitter.com/reverseSplitArb"> reverse split arbitrage</a></p>
+        <p><span style={{"color": "#f7a35c"}}><b>SPY</b></span>: A portfolio entirely invested in SPY, as a benchmark.</p>
         <div>
     
         {
