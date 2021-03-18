@@ -175,6 +175,7 @@ class Favourites extends Component {
             <li>Atlanta (2016-)</li>
             <li>The Crown (2016-)</li>
             <li>The Good Place (2016-2020)</li>
+            <li>Letterkenny (2016-)</li>
             <li>The Tick (2016-2019)</li>
             <li>Santa Clarita Diet (2017-2019)</li>
             <li>The Marvelous Mrs. Maisel (2017-)</li>

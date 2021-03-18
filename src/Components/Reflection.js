@@ -3,6 +3,7 @@ import MarkdownComponent from './MarkdownComponent';
 
 class Reflection extends Component {
   constructor(props) {
+      super()
     this.state = { file: this.props.file };
   }
 

@@ -176,6 +176,9 @@ class Trader extends Component {
           title: {
               text: ''
           },
+          xAxis: {
+            ordinal: false
+          },
           series: 
             [
                 {
@@ -217,27 +220,17 @@ class Trader extends Component {
                 selected: 1,
                 buttons: 
                 [
-            // {
-            //     type: 'hour',
-            //     count: 1,
-            //     text: '1h',
-            //     title: 'View 1 hour'
-            // }, 
+            {
+                type: 'hour',
+                count: 1,
+                text: '1h',
+                title: 'View 1 hour'
+            }, 
             {
                 type: 'hour',
                 count: 12,
                 text: '12h',
                 title: 'View 12 hours'
-            }, 
-            {
-                type: 'day',
-                count: 1,
-                text: '1d',
-                title: 'View 1 Day'
-            }, {
-                type: 'ytd',
-                text: 'YTD',
-                title: 'View year to date'
             }, {
                 type: 'year',
                 count: 1,
@@ -251,7 +244,7 @@ class Trader extends Component {
             }
       };
     //   const { equityBSS, changeBSS, positionsBSS, limitedPositionsBSS, equity, equityS, changeS, positionsS, limitedPositionsS, change, positions, isDesktop, limitedPositions } = this.state;
-      const { isDesktop, equity, change, positions, data, limitedPositions } = this.state
+      const { isDesktop, equity, change, positions, limitedPositions } = this.state
       
       const formattedEquity = []
       const percentChange = []
