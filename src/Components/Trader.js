@@ -42,13 +42,13 @@ class Trader extends Component {
                 trimmed = results.map(item => {
                     const equity = parseFloat(item[1])*100
                     const date = item[0]
-                    return [date*1000, equity <= 20000 ? 100000 : equity]
+                    return [date*1000, equity]
                 })
             } else {
                 trimmed = results.map(item => {
                     const equity = parseFloat(item[1])
                     const date = item[0]
-                    return [date*1000, equity <= 20000 ? 100000 : equity]
+                    return [date*1000, equity]
                 })
             }
             trimmed.sort(function(a,b) { return a[0] > b[0] })
@@ -178,6 +178,9 @@ class Trader extends Component {
           },
           xAxis: {
             ordinal: false
+          },
+          time: {
+            useUTC: false
           },
           series: 
             [
@@ -325,7 +328,9 @@ class Trader extends Component {
             )
         }
         </div>
-        <ReactHighcharts config={config}></ReactHighcharts>
+        <div className="chart">
+            <ReactHighcharts config={config}></ReactHighcharts>
+        </div>
             <h4>Current Holdings</h4>
             <div className="tabs">
             <Tabs>

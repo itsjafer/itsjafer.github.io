@@ -39,7 +39,7 @@ b {
 h2 {
   height: 100%;
   margin: 0;
-  font-size: 3em;
+  font-size: 2em;
   font-weight: 300;
 }
 h3 {
@@ -234,4 +234,4 @@ a {
 }
 .ReactTable .rt-tbody{
   overflow: overlay;
-  }
+}
