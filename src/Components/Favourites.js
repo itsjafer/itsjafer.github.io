@@ -139,6 +139,7 @@ class Favourites extends Component {
             <li>Enola Holmes (2020)</li>
             <li>His House (2020)</li>
             <li>The Social Dilemma (2020)</li>
+            <li>A Quiet Place 2 (2021)</li>
           </ul>
         </div>
         <div className="shows">
@@ -200,7 +201,8 @@ class Favourites extends Component {
             <li>Upload (2020-)</li>
             <li>Mrs. America (2020)</li>
             <li>The Queen's Gambit (2020)</li>
-            <li>Solar Opposites (2020)</li>
+            <li>Solar Opposites (2020-)</li>
+            <li>Invincible (2021-)</li>
           </ul>
         </div>
 
