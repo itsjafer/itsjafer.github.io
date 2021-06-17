@@ -19,7 +19,7 @@ class Favourites extends Component {
           I&apos;ve found that I
           <b> really</b>
           {' '}
-          enjoy making lists of things that I like so I thought I&apos;d put some of them here. Last updated February 2021.
+          enjoy making lists of things that I like so I thought I&apos;d put some of them here.
         </p>
         <div className="movies">
           <h3>Movies</h3>
