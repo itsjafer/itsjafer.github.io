@@ -23,7 +23,7 @@ class Home extends Component {
           respectively.
         </p>
 
-        <p>This Summer, I'll be interning at Google within the Cloud Compute team!</p>
+        <p>This Summer, I'm currently interning at Google within the Cloud Compute VMWare Engine team!</p>
         
         <p>
           Apart from all that, I&apos;m a big fan of board games, movies, and TV Shows (for real, I even have a
