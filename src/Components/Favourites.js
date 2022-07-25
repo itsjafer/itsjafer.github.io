@@ -152,6 +152,9 @@ class Favourites extends Component {
             <li>The Batman (2022)</li>
             <li>Everything, Everywhere, All At Once (2022)</li>
             <li>Men (2022)</li>
+            <li>Top Gun (2022)</li>
+            <li>Nope (2022)</li>
+            <li>The Black Phone (2022)</li>
           </ul>
         </div>
         <div className="shows">
@@ -216,7 +219,9 @@ class Favourites extends Component {
             <li>Solar Opposites (2020-)</li>
             <li>Ted Lasso (2020-)</li>
             <li>Invincible (2021-)</li>
+            <li>Loki (2021-)</li>
             <li>WandaVision (2021)</li>
+            <li>Severance (2022)</li>
           </ul>
         </div>
 
