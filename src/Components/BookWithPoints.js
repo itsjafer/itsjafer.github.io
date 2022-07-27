@@ -4,7 +4,7 @@ import moment_ from "moment"
 
 import "react-datepicker/dist/react-datepicker.css";
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Button, DatePicker, Form, Input, Table, Tag, Tooltip } from 'antd';
+import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Spin } from 'antd';
 import { value } from 'react-json-pretty/dist/monikai';
 const moment = moment_
 
@@ -60,8 +60,10 @@ mergeFlightsByFlightNo = (scraperResults) => {
 }
 
   handleSubmit(values) {
+    let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase"]
     this.setState({
-      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD")}
+      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD")},
+      results: [],
     })
     localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
     const formData = new FormData();
@@ -73,8 +75,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
     method: 'POST',
     body: formData
     };
-
-    for (let x of ["southwest", "chase", "united", "delta"]) {
+    for (let x of airlines) {
       this.setState({ loading: this.state.loading+1 })
       fetch('https://airline-scraper-ccjl4xchpq-uc.a.run.app/' + x, requestOptions)
       .then(response => response.json())
@@ -187,7 +188,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
                 <Input placeholder='destination' />
             </Form.Item>
             <Form.Item name="departureDate" style={{ marginRight: 5 }}><DatePicker disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
-            <Form.Item style={{ marginLeft: 0 }}><Button type="primary" htmlType="submit" >Search</Button></Form.Item>
+            <Form.Item style={{ marginLeft: 0 }}><Button type="primary" htmlType="submit" loading={this.state.loading > 0} >Search</Button></Form.Item>
           </Form>
         </div>
         <div className='results'>
@@ -196,7 +197,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           columns={columns}
           rowKey={(record) => record.flightNo}
           size="small"
-          loading={this.state.loading > 0}
+          loading={this.state.loading >= 3}
           showSorterTooltip={false}
           pagination={false}
           className="search-results"
