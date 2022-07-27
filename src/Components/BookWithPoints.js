@@ -20,8 +20,12 @@ class BookWithPoints extends Component {
           united: null,
           chase: null,
           searchQuery: JSON.parse(localStorage.getItem("searchQuery") || JSON.stringify(defaultQuery)),
-          results: []
+          results: [],
+          isDesktop: false,
         };
+
+        this.updatePredicate = this.updatePredicate.bind(this);
+
       }
 
   reduceToBestFarePerCabin = (flight) => {
@@ -32,6 +36,19 @@ class BookWithPoints extends Component {
     })
   
     return { ...flight, fares: Object.values(scraperFares) }
+  }
+
+  componentDidMount() {
+    this.updatePredicate();
+    window.addEventListener('resize', this.updatePredicate);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updatePredicate);
+  }
+
+  updatePredicate() {
+    this.setState({ isDesktop: window.innerWidth > 800 });
   }
 
   // Merges properties of FlightWithFares into unique FlightWithFares by flightNo
@@ -104,6 +121,44 @@ mergeFlightsByFlightNo = (scraperResults) => {
     const airlineLogoUrl = (airlineCode) => {
       return airlineCode === "WN" ? "https://www.southwest.com/favicon.ico" : `https://www.gstatic.com/flights/airline_logos/35px/${airlineCode}.png`
     }
+
+    const smallColumns = [
+      {
+        title: "Flight",
+        dataIndex: "flightNo",
+        sorter: (recordA, recordB) => recordA.flightNo.localeCompare(recordB.flightNo),
+        render: (flightNo) => (
+          <>
+            <img style={{ height: 16, marginBottom: 3, borderRadius: 3 }} src={airlineLogoUrl(flightNo.substring(0, 2))} alt={flightNo.substring(0, 2)} />
+            <span style={{ marginLeft: 8 }}>{flightNo} ({flightNo.split(",").length -1} stops)</span>
+          </>
+        )
+      },
+      ...[{ title: "Economy", key: "economy" }, { title: "Business", key: "business" }, { title: "First", key: "first" }].filter((col) => this.state.results?.some((res) => res.fares.some((fare) => fare.cabin === col?.key))).map((column) => ({
+        title: column.title,
+        key: column.key,
+        render: (_text, record) => {
+          const smallestFare = lowestFare(record.fares, column.key)
+          if (!smallestFare)
+            return ""
+  
+          const milesStr = Math.round(smallestFare.miles).toLocaleString()
+          const cashStr = smallestFare.cash.toLocaleString("en-US", { style: "currency", currency: smallestFare.currencyOfCash ?? "", maximumFractionDigits: 0 })
+  
+          const tooltipContent = record.fares
+            .filter((fare) => fare.cabin === column.key)
+            .sort((a, b) => a.miles - b.miles)
+            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()}{` (${fare.bookingClass || "?"})`}</div>)
+  
+          return <Tooltip title={tooltipContent} mouseEnterDelay={0} mouseLeaveDelay={0}><Tag color={"green"}>{milesStr}{` + ${cashStr}`}</Tag></Tooltip>
+        },
+        sorter: (recordA, recordB) => {
+          const fareAMiles = lowestFare(recordA.fares, column.key)?.miles ?? Number.MAX_VALUE
+          const fareBMiles = lowestFare(recordB.fares, column.key)?.miles ?? Number.MAX_VALUE
+          return fareAMiles - fareBMiles
+        },
+      }))
+    ]
     const columns = [
       {
         title: "Flight",
@@ -179,9 +234,9 @@ mergeFlightsByFlightNo = (scraperResults) => {
             initialValues={initialValuesWithMoment}
             onFinish={(values) => this.handleSubmit(values)}
             autoComplete="on"
-            layout="inline" 
+            layout={this.state.isDesktop ? "inline" : "vertical"} 
             >
-            <Form.Item name="origin" rules={[{required: true}]} style={{ width: 100, marginRight: 5, marginBottom: 0, marginLeft:50 }}>
+            <Form.Item name="origin" rules={[{required: true}]} style={{ width: 100, marginRight: 5, marginBottom: 0}}>
                 <Input placeholder='origin'/>
             </Form.Item>
             <Form.Item name="destination" rules={[{required: true}]} style={{ width: 100, marginRight: 5, marginBottom: 0 }}>
@@ -194,7 +249,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
         <div className='results'>
         <Table
           dataSource={this.state.results}
-          columns={columns}
+          columns={this.state.isDesktop ? columns : smallColumns}
           rowKey={(record) => record.flightNo}
           size="small"
           loading={this.state.loading >= 3}
