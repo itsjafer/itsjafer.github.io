@@ -260,3 +260,12 @@ a {
 .blogEntry {
   text-align: left;
 }
+.ant-form-item-explain {
+  display: none;
+}
+
+.search {
+  float:left;
+  padding: 1em;
+  width: 100%;
+}

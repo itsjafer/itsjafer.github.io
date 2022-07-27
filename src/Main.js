@@ -19,6 +19,7 @@ import Chai from './Components/Chai';
 import {Blog, BlogEntry} from './Components/Blog';
 import Trader from './Components/Trader';
 import Loonie from './Components/Loonie/Loonie';
+import BookWithPoints from './Components/BookWithPoints';
 
 ReactGA.initialize('UA-123367662-1');
 
@@ -49,6 +50,7 @@ class Main extends Component {
                 <NavLink to="/blog">Blog</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
+                <NavLink to="/points">BookWithPoints</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Jailbreak Repo</a>
                 </div>
               </div></li>
@@ -70,6 +72,7 @@ class Main extends Component {
             <Route path="/loonie" component={withTracker(() => <Loonie cookies={cookies} />)} />
             <Route path="/parser" component={withTracker(Parser)} />
             <Route path="/trader" component={withTracker(Trader)} />
+            <Route path="/points" component={withTracker(BookWithPoints)} />
           </div>
         </div>
       </HashRouter>

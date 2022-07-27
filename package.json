@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@material-ui/core": "^3.9.4",
+    "airport-autocomplete-js": "^2.1.4",
+    "antd": "^4.22.1",
     "highlightjs": "^9.16.2",
     "knope": "^1.1.2",
     "load-script": "^1.0.0",
@@ -22,6 +25,7 @@
     "rc-tabs": "^11.7.3",
     "react": "^16.13.1",
     "react-cookie": "^4.0.3",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^16.13.1",
     "react-fade-in": "^2.0.1",
     "react-ga": "^2.7.0",
