@@ -14,7 +14,7 @@ class BookWithPoints extends Component {
     constructor(props) {
         super(props);
 
-        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin"]
+        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin", "aa"]
         let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
 
         this.state = {
@@ -101,7 +101,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
     method: 'POST',
     body: formData
     };
-    for (let x of this.state.airlines) {
+    this.state.airlines.map((x) => {
       this.setState(({ loading }) => ({
         loading: new Set(loading).add(x)
       }));
@@ -131,7 +131,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           };
         });
       })
-    }
+    })
   }
 
   render() {
