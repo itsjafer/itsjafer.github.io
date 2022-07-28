@@ -257,7 +257,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
             autoComplete="on"
             layout={this.state.isDesktop ? "inline" : "vertical"} 
             >
-            <Form.Item name="origin" rules={[{required: true}]} style={{ width: 200, marginRight: 5, marginBottom: 0}}>
+            <Form.Item name="origin" rules={[{required: true}]} style={this.state.isDesktop ? { width: 200, marginRight: 5, marginBottom: 0} : { width: "100%", marginRight: 5, marginBottom: 0 }}>
                 {/* <Input placeholder='origin'/> */}
                 <Select
                   showSearch
@@ -266,7 +266,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`}key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
             </Form.Item>
-            <Form.Item name="destination" rules={[{required: true}]} style={{ width: 200, marginRight: 5, marginBottom: 0 }}>
+            <Form.Item name="destination" rules={[{required: true}]} style={this.state.isDesktop ? { width: 200, marginRight: 5, marginBottom: 0} : { width: "100%", marginRight: 5, marginBottom: 0 }}>
                 <Select
                   showSearch
                   optionFilterProp="value"
@@ -274,13 +274,13 @@ mergeFlightsByFlightNo = (scraperResults) => {
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`} key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
             </Form.Item>
-            <Form.Item name="departureDate" style={{ marginRight: 5, marginBottom: 0 }}><DatePicker style= {{ width:200, marginBottom: 0}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
-            <Form.Item name="airlines" style={{ width: 200, marginRight: 5, marginBottom: 0 }}>
-              <Select mode="tags" style={{ width: '100%' }} >
+            <Form.Item name="departureDate" style = {{marginBottom: 0, marginRight: 5}}><DatePicker style= {this.state.isDesktop ? { width: 200} : { width: "100%"}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
+            <Form.Item name="airlines" style={{ marginRight: 5, marginBottom: 0 }}>
+              <Select maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 250} : { width: "100%"}}  >
                 {this.state.airlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
               </Select>
             </Form.Item>
-            <Form.Item style={{ marginLeft: 0, marginBottom: 0, marginTop: 5 }}><Button type="primary" htmlType="submit" loading={this.state.loading.size > 0} >Search</Button></Form.Item>
+            <Form.Item style={this.state.isDesktop ? { width: 50, marginLeft: 0, marginBottom: 0} : { width: "100%" }}><Button type="primary" htmlType="submit" style={this.state.isDesktop ? {} : { width: "100%"}} loading={this.state.loading.size > 0} >Search</Button></Form.Item>
           </Form>
         </div>
         <div className='results'>
