@@ -12,6 +12,7 @@ class BookWithPoints extends Component {
     constructor(props) {
         super(props);
 
+        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase"]
         let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
 
         this.state = {
@@ -23,6 +24,7 @@ class BookWithPoints extends Component {
           searchQuery: JSON.parse(localStorage.getItem("searchQuery") || JSON.stringify(defaultQuery)),
           results: [],
           isDesktop: false,
+          airlines: airlines,
         };
 
         this.updatePredicate = this.updatePredicate.bind(this);
@@ -79,12 +81,12 @@ mergeFlightsByFlightNo = (scraperResults) => {
 
   handleSubmit(values) {
     console.log(values)
-    let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase"]
     this.setState({
       searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD")},
       results: [],
       loading: new Set(),
       failed: new Set(),
+      airlines: values['airlines']
     })
     localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
     const formData = new FormData();
@@ -96,7 +98,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
     method: 'POST',
     body: formData
     };
-    for (let x of airlines) {
+    for (let x of this.state.airlines) {
       this.setState(({ loading }) => ({
         loading: new Set(loading).add(x)
       }));
@@ -134,7 +136,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
       const faresForClass = fares?.filter((fare) => fare.cabin === cabin)
       if (!faresForClass || faresForClass.length === 0)
         return null
-      return faresForClass.reduce((smallest, cur) => (cur.miles < smallest.miles ? cur : smallest))
+      return faresForClass.reduce((smallest, cur) => ((cur.miles + cur.cash * 100) < (smallest.miles + smallest.cash * 100) ? cur : smallest))
     }
   
     const airlineLogoUrl = (airlineCode) => {
@@ -166,14 +168,14 @@ mergeFlightsByFlightNo = (scraperResults) => {
   
           const tooltipContent = record.fares
             .filter((fare) => fare.cabin === column.key)
-            .sort((a, b) => a.miles - b.miles)
-            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()}{` (${fare.bookingClass || "?"})`}</div>)
+            .sort((a, b) => (a.miles + a.cash * 100) - (b.miles + b.cash * 100))
+            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
   
           return <Tooltip title={tooltipContent} mouseEnterDelay={0} mouseLeaveDelay={0}><Tag color={"green"}>{milesStr}{` + ${cashStr}`}</Tag></Tooltip>
         },
         sorter: (recordA, recordB) => {
-          const fareAMiles = lowestFare(recordA.fares, column.key)?.miles ?? Number.MAX_VALUE
-          const fareBMiles = lowestFare(recordB.fares, column.key)?.miles ?? Number.MAX_VALUE
+          const fareAMiles = ((lowestFare(recordA.fares, column.key)?.miles) + (lowestFare(recordA.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
+          const fareBMiles = ((lowestFare(recordB.fares, column.key)?.miles) + (lowestFare(recordB.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
           return fareAMiles - fareBMiles
         },
       }))
@@ -230,20 +232,20 @@ mergeFlightsByFlightNo = (scraperResults) => {
   
           const tooltipContent = record.fares
             .filter((fare) => fare.cabin === column.key)
-            .sort((a, b) => a.miles - b.miles)
-            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()}{` (${fare.bookingClass || "?"})`}</div>)
+            .sort((a, b) => (a.miles + a.cash * 100) - (b.miles + b.cash * 100))
+            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
   
           return <Tooltip title={tooltipContent} mouseEnterDelay={0} mouseLeaveDelay={0}><Tag color={"green"}>{milesStr}{` + ${cashStr}`}</Tag></Tooltip>
         },
         sorter: (recordA, recordB) => {
-          const fareAMiles = lowestFare(recordA.fares, column.key)?.miles ?? Number.MAX_VALUE
-          const fareBMiles = lowestFare(recordB.fares, column.key)?.miles ?? Number.MAX_VALUE
+          const fareAMiles = ((lowestFare(recordA.fares, column.key)?.miles) + (lowestFare(recordA.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
+          const fareBMiles = ((lowestFare(recordB.fares, column.key)?.miles) + (lowestFare(recordB.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
           return fareAMiles - fareBMiles
         },
       }))
     ]
 
-    const initialValuesWithMoment = { ...this.state.searchQuery, departureDate: moment(this.state.searchQuery.departureDate) }
+    const initialValuesWithMoment = { ...this.state.searchQuery, airlines: this.state.airlines, departureDate: moment(this.state.searchQuery.departureDate) }
 
     return (
         <div>
@@ -272,8 +274,13 @@ mergeFlightsByFlightNo = (scraperResults) => {
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`} key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
             </Form.Item>
-            <Form.Item name="departureDate" style={{ marginRight: 5 }}><DatePicker style= {{ width:200, marginBottom: 0}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
-            <Form.Item style={{ marginLeft: 0, marginBottom: 0 }}><Button type="primary" htmlType="submit" loading={this.state.loading.size > 0} >Search</Button></Form.Item>
+            <Form.Item name="departureDate" style={{ marginRight: 5, marginBottom: 0 }}><DatePicker style= {{ width:200, marginBottom: 0}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
+            <Form.Item name="airlines" style={{ width: 200, marginRight: 5, marginBottom: 0 }}>
+              <Select mode="tags" style={{ width: '100%' }} >
+                {this.state.airlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
+              </Select>
+            </Form.Item>
+            <Form.Item style={{ marginLeft: 0, marginBottom: 0, marginTop: 5 }}><Button type="primary" htmlType="submit" loading={this.state.loading.size > 0} >Search</Button></Form.Item>
           </Form>
         </div>
         <div className='results'>
@@ -288,10 +295,10 @@ mergeFlightsByFlightNo = (scraperResults) => {
           columns={this.state.isDesktop ? columns : smallColumns}
           rowKey={(record) => record.flightNo}
           size="small"
-          loading={this.state.loading.size >= 4}
+          loading={this.state.loading.size >= this.state.airlines - 1}
           showSorterTooltip={false}
           pagination={true}
-          scroll={{ y: 500 }}
+          scroll={{ y: 400 }}
           className="search-results"
         />
         </div>
