@@ -252,7 +252,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
     return (
         <div>
           <Typography>
-          <Title>FlyWithPoints</Title>
+          <Title>BookWithPoints</Title>
           <Paragraph>
             Welcome! This is a tool I've created that aggregates flight fares based on how much it would cost to book using points. Different airlines have different ways of calculating award fares and I find it tedious to manually check websites one-by-one; this tool is an alternative approach.
           </Paragraph>

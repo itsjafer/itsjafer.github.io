@@ -50,7 +50,7 @@ class Main extends Component {
                 <NavLink to="/blog">Blog</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
-                <NavLink to="/points">FlyWithPoints</NavLink>
+                <NavLink to="/points">BookWithPoints</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Jailbreak Repo</a>
                 </div>
               </div></li>
