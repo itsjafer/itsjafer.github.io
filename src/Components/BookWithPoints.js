@@ -4,8 +4,10 @@ import moment_ from "moment"
 import airportsDb from "./airports.json"
 import "react-datepicker/dist/react-datepicker.css";
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Select, Alert } from 'antd';
+import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Select, Alert, Typography, Divider } from 'antd';
+
 import { value } from 'react-json-pretty/dist/monikai';
+const { Title, Paragraph, Text, Link } = Typography;
 const moment = moment_
 
 class BookWithPoints extends Component {
@@ -249,6 +251,15 @@ mergeFlightsByFlightNo = (scraperResults) => {
 
     return (
         <div>
+          <Typography>
+          <Title>FlyWithPoints</Title>
+          <Paragraph>
+            Welcome! This is a tool I've created that aggregates flight fares based on how much it would cost to book using points. Different airlines have different ways of calculating award fares and I find it tedious to manually check websites one-by-one; this tool is an alternative approach.
+          </Paragraph>
+
+          <Divider />
+
+          </Typography>
         <div className="search">
           <Form
             name="flightsearch"
