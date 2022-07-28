@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'react-table/react-table.css';
 import moment_ from "moment"
-
+import airportsDb from "./airports.json"
 import "react-datepicker/dist/react-datepicker.css";
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Spin } from 'antd';
+import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Select, Alert } from 'antd';
 import { value } from 'react-json-pretty/dist/monikai';
 const moment = moment_
 
@@ -12,10 +12,11 @@ class BookWithPoints extends Component {
     constructor(props) {
         super(props);
 
-        let defaultQuery = {origin: "ORD", destination:"LGA", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
+        let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
 
         this.state = {
-          loading: 0,
+          loading: new Set(),
+          failed: new Set(),
           southwest: null,
           united: null,
           chase: null,
@@ -77,15 +78,18 @@ mergeFlightsByFlightNo = (scraperResults) => {
 }
 
   handleSubmit(values) {
+    console.log(values)
     let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase"]
     this.setState({
       searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD")},
       results: [],
+      loading: new Set(),
+      failed: new Set(),
     })
     localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
     const formData = new FormData();
-    formData.append("origin", values['origin'])
-    formData.append("destination", values['destination'])
+    formData.append("origin", values['origin'].split('-')[0].trim())
+    formData.append("destination", values['destination'].split('-')[0].trim())
     console.log(values['departureDate'].format("YYYY-MM-DD"))
     formData.append("date", values['departureDate'].format("YYYY-MM-DD"))
     const requestOptions = {
@@ -93,7 +97,9 @@ mergeFlightsByFlightNo = (scraperResults) => {
     body: formData
     };
     for (let x of airlines) {
-      this.setState({ loading: this.state.loading+1 })
+      this.setState(({ loading }) => ({
+        loading: new Set(loading).add(x)
+      }));
       fetch('https://airline-scraper-ccjl4xchpq-uc.a.run.app/' + x, requestOptions)
       .then(response => response.json())
       .then((data) => {
@@ -102,10 +108,23 @@ mergeFlightsByFlightNo = (scraperResults) => {
 
         let finalData = this.mergeFlightsByFlightNo(cleanData)
         this.setState({ results: finalData})
-        this.setState({ loading: this.state.loading-1 })
+        this.setState(({ loading }) => {
+          const newLoading = new Set(loading);
+          newLoading.delete(x);
+          return {
+           loading: newLoading
+          };
+        });
       })
       .catch((e) => {
-        this.setState({ loading: this.state.loading-1})
+        this.setState(({ loading, failed }) => {
+          const newLoading = new Set(loading);
+          newLoading.delete(x);
+          return {
+           loading: newLoading,
+           failed: new Set(failed).add(x)
+          };
+        });
       })
     }
   }
@@ -130,7 +149,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
         render: (flightNo) => (
           <>
             <img style={{ height: 16, marginBottom: 3, borderRadius: 3 }} src={airlineLogoUrl(flightNo.substring(0, 2))} alt={flightNo.substring(0, 2)} />
-            <span style={{ marginLeft: 8 }}>{flightNo} ({flightNo.split(",").length -1} stops)</span>
+            <span style={{ marginLeft: 8 }}>{flightNo} ({(flightNo.split(",").length - 1) > 0 ? `${flightNo.split(",").length -1} stop(s)` : 'nonstop'})</span>
           </>
         )
       },
@@ -167,7 +186,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
         render: (flightNo) => (
           <>
             <img style={{ height: 16, marginBottom: 3, borderRadius: 3 }} src={airlineLogoUrl(flightNo.substring(0, 2))} alt={flightNo.substring(0, 2)} />
-            <span style={{ marginLeft: 8 }}>{flightNo} ({flightNo.split(",").length -1} stops)</span>
+            <span style={{ marginLeft: 8 }}>{flightNo} ({(flightNo.split(",").length - 1) > 0 ? (flightNo.split(",").length - 1) == 1 ? '1 stop' : `${flightNo.split(",").length -1} stops` : 'nonstop'})</span>
           </>
         )
       },
@@ -236,27 +255,44 @@ mergeFlightsByFlightNo = (scraperResults) => {
             autoComplete="on"
             layout={this.state.isDesktop ? "inline" : "vertical"} 
             >
-            <Form.Item name="origin" rules={[{required: true}]} style={{ width: 100, marginRight: 5, marginBottom: 0}}>
-                <Input placeholder='origin'/>
+            <Form.Item name="origin" rules={[{required: true}]} style={{ width: 200, marginRight: 5, marginBottom: 0}}>
+                {/* <Input placeholder='origin'/> */}
+                <Select
+                  showSearch
+                  optionFilterProp="value"
+                  >
+                  { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`}key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
+                </Select>
             </Form.Item>
-            <Form.Item name="destination" rules={[{required: true}]} style={{ width: 100, marginRight: 5, marginBottom: 0 }}>
-                <Input placeholder='destination' />
+            <Form.Item name="destination" rules={[{required: true}]} style={{ width: 200, marginRight: 5, marginBottom: 0 }}>
+                <Select
+                  showSearch
+                  optionFilterProp="value"
+                  >
+                  { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`} key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
+                </Select>
             </Form.Item>
-            <Form.Item name="departureDate" style={{ marginRight: 5 }}><DatePicker disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
-            <Form.Item style={{ marginLeft: 0 }}><Button type="primary" htmlType="submit" loading={this.state.loading > 0} >Search</Button></Form.Item>
+            <Form.Item name="departureDate" style={{ marginRight: 5 }}><DatePicker style= {{ width:200, marginBottom: 0}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
+            <Form.Item style={{ marginLeft: 0, marginBottom: 0 }}><Button type="primary" htmlType="submit" loading={this.state.loading.size > 0} >Search</Button></Form.Item>
           </Form>
         </div>
         <div className='results'>
+        {[...this.state.loading].map((name) => {
+          return <Alert key={name} message={`${name} loading...`} type="info" showicon banner closable size="small"/>
+        })}
+        {[...this.state.failed].map((name) => {
+          return <Alert key={name} message={`${name} failed to load.`} type="error" showicon banner closable size="small"/>
+        })}
         <Table
           dataSource={this.state.results}
           columns={this.state.isDesktop ? columns : smallColumns}
           rowKey={(record) => record.flightNo}
           size="small"
-          loading={this.state.loading >= 3}
+          loading={this.state.loading.size >= 4}
           showSorterTooltip={false}
-          pagination={false}
+          pagination={true}
+          scroll={{ y: 500 }}
           className="search-results"
-          style={{ whiteSpace: "nowrap" }}
         />
         </div>
         </div>
