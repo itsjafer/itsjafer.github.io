@@ -14,7 +14,7 @@ class BookWithPoints extends Component {
     constructor(props) {
         super(props);
 
-        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase"]
+        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin"]
         let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
 
         this.state = {
@@ -26,6 +26,7 @@ class BookWithPoints extends Component {
           searchQuery: JSON.parse(localStorage.getItem("searchQuery") || JSON.stringify(defaultQuery)),
           results: [],
           isDesktop: false,
+          allAirlines: airlines,
           airlines: airlines,
         };
 
@@ -288,7 +289,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
             <Form.Item name="departureDate" style = {{marginBottom: 0, marginRight: 5}}><DatePicker style= {this.state.isDesktop ? { width: 200} : { width: "100%"}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
             <Form.Item name="airlines" style={{ marginRight: 5, marginBottom: 0 }}>
               <Select maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 250} : { width: "100%"}}  >
-                {this.state.airlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
+                {this.state.allAirlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
               </Select>
             </Form.Item>
             <Form.Item style={this.state.isDesktop ? { width: 50, marginLeft: 0, marginBottom: 0} : { width: "100%" }}><Button type="primary" htmlType="submit" style={this.state.isDesktop ? {} : { width: "100%"}} loading={this.state.loading.size > 0} >Search</Button></Form.Item>
