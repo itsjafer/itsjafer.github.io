@@ -312,6 +312,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           pagination={true}
           scroll={{ y: 400 }}
           className="search-results"
+          style={{marginBottom: 200}}
         />
         </div>
         </div>
