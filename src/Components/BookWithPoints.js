@@ -14,8 +14,8 @@ class BookWithPoints extends Component {
     constructor(props) {
         super(props);
 
-        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin", "aa"]
-        let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD")}
+        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin", "aa", "alaska"]
+        let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD"), airlines: airlines}
 
         this.state = {
           loading: new Set(),
@@ -27,7 +27,7 @@ class BookWithPoints extends Component {
           results: [],
           isDesktop: false,
           allAirlines: airlines,
-          airlines: airlines,
+          airlines: [],
         };
 
         this.updatePredicate = this.updatePredicate.bind(this);
@@ -85,7 +85,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
   handleSubmit(values) {
     console.log(values)
     this.setState({
-      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD")},
+      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD"), airlines:values['airlines']},
       results: [],
       loading: new Set(),
       failed: new Set(),
@@ -154,7 +154,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
         render: (flightNo) => (
           <>
             <img style={{ height: 16, marginBottom: 3, borderRadius: 3 }} src={airlineLogoUrl(flightNo.substring(0, 2))} alt={flightNo.substring(0, 2)} />
-            <span style={{ marginLeft: 8 }}>{flightNo} ({(flightNo.split(",").length - 1) > 0 ? `${flightNo.split(",").length -1} stop(s)` : 'nonstop'})</span>
+            <span style={{ marginLeft: 8 }}>{flightNo} ({(flightNo.split(",").length - 1) > 0 ? (flightNo.split(",").length - 1) == 1 ? '1 stop' : `${flightNo.split(",").length -1} stops` : 'nonstop'})</span>
           </>
         )
       },
@@ -172,7 +172,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           const tooltipContent = record.fares
             .filter((fare) => fare.cabin === column.key)
             .sort((a, b) => (a.miles + a.cash * 100) - (b.miles + b.cash * 100))
-            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
+            .map((fare) => fare.scraper == "Chase Ultimate Rewards" ? <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} or {(fare.miles * 1.25 / 100).toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div> : <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
   
           return <Tooltip title={tooltipContent} mouseEnterDelay={0} mouseLeaveDelay={0}><Tag color={"green"}>{milesStr}{` + ${cashStr}`}</Tag></Tooltip>
         },
@@ -214,7 +214,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
       {
         title: "Arrival",
         dataIndex: "arrivalDateTime",
-        render: (_text, record) => `${moment(record.arrivalDateTime).format("h:mm A")} ${moment(record.arrivalDateTime).isAfter(moment(record.departureDateTime), "day") ? " (+1)" : ""} (${record.duration})`,
+        render: (_text, record) => `${moment(record.arrivalDateTime).format("h:mm A")} ${moment(record.arrivalDateTime).isAfter(moment(record.departureDateTime), "day") ? " (+1)" : ""} ${record.duration > 30 ? ("(" + Math.round(record.duration / 60) + (record.duration > 90 ? " hours)" : "hour)")) : ""}`,
         sorter: (recordA, recordB) => moment(recordA.arrivalDateTime).diff(moment(recordB.arrivalDateTime)),
       },
       {
@@ -236,7 +236,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           const tooltipContent = record.fares
             .filter((fare) => fare.cabin === column.key)
             .sort((a, b) => (a.miles + a.cash * 100) - (b.miles + b.cash * 100))
-            .map((fare) => <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
+            .map((fare) => fare.scraper == "Chase Ultimate Rewards" ? <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} or {(fare.miles * 1.25 / 100).toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div> : <div key={`${fare.scraper}${record.flightNo}${fare.cabin}${fare.miles}`}>{fare.scraper}: {Math.round(fare.miles).toLocaleString()} + {fare.cash.toLocaleString("en-US", { style: "currency", currency: fare.currencyOfCash ?? "", maximumFractionDigits: 0 })} {` (${fare.bookingClass || "?"})`}</div>)
   
           return <Tooltip title={tooltipContent} mouseEnterDelay={0} mouseLeaveDelay={0}><Tag color={"green"}>{milesStr}{` + ${cashStr}`}</Tag></Tooltip>
         },
@@ -248,7 +248,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
       }))
     ]
 
-    const initialValuesWithMoment = { ...this.state.searchQuery, airlines: this.state.airlines, departureDate: moment(this.state.searchQuery.departureDate) }
+    const initialValuesWithMoment = { ...this.state.searchQuery, departureDate: moment(this.state.searchQuery.departureDate) }
 
     return (
         <div>
@@ -288,7 +288,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
             </Form.Item>
             <Form.Item name="departureDate" style = {{marginBottom: 0, marginRight: 5}}><DatePicker style= {this.state.isDesktop ? { width: 200} : { width: "100%"}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
             <Form.Item name="airlines" style={{ marginRight: 5, marginBottom: 0 }}>
-              <Select maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 250} : { width: "100%"}}  >
+              <Select listHeight={300} maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 250} : { width: "100%"}}  >
                 {this.state.allAirlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
               </Select>
             </Form.Item>
@@ -307,12 +307,12 @@ mergeFlightsByFlightNo = (scraperResults) => {
           columns={this.state.isDesktop ? columns : smallColumns}
           rowKey={(record) => record.flightNo}
           size="small"
-          loading={this.state.loading.size >= this.state.airlines - 1}
+          loading={this.state.loading.size > 0 && this.state.loading.size >= this.state.airlines - 1}
           showSorterTooltip={false}
           pagination={true}
-          scroll={{ y: 400 }}
+          scroll={{ y: 500 }}
           className="search-results"
-          style={{marginBottom: 200}}
+          style={this.state.isDesktop ? {} : {marginBottom: 200}}
         />
         </div>
         </div>
