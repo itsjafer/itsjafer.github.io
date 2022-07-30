@@ -31,6 +31,7 @@ class BookWithPoints extends Component {
         };
 
         this.updatePredicate = this.updatePredicate.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
       }
 
@@ -83,34 +84,18 @@ mergeFlightsByFlightNo = (scraperResults) => {
 }
 
   handleSubmit(values) {
-    console.log(values)
-    this.setState({
-      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD"), airlines:values['airlines']},
-      results: [],
-      loading: new Set(),
-      failed: new Set(),
-      airlines: values['airlines']
-    })
-    localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
-    const formData = new FormData();
-    formData.append("origin", values['origin'].split('-')[0].trim())
-    formData.append("destination", values['destination'].split('-')[0].trim())
-    console.log(values['departureDate'].format("YYYY-MM-DD"))
-    formData.append("date", values['departureDate'].format("YYYY-MM-DD"))
-    const requestOptions = {
-    method: 'POST',
-    body: formData
-    };
-    this.state.airlines.map((x) => {
+
+    const getAirline = (x, requestOptions) => {
+      const cloudFunctionsAirlines = new Set(["united", "aa"])
       this.setState(({ loading }) => ({
         loading: new Set(loading).add(x)
       }));
-      fetch('https://airline-scraper-ccjl4xchpq-uc.a.run.app/' + x, requestOptions)
+      fetch((cloudFunctionsAirlines.has(x) ? 'https://us-central1-flightawards.cloudfunctions.net/': 'https://airline-scraper-ccjl4xchpq-uc.a.run.app/') + x, requestOptions)
       .then(response => response.json())
       .then((data) => {
         let fullData = [...this.state.results, ...data ]
         let cleanData = fullData.map((flight) => this.reduceToBestFarePerCabin(flight))
-
+  
         let finalData = this.mergeFlightsByFlightNo(cleanData)
         this.setState({ results: finalData})
         this.setState(({ loading }) => {
@@ -131,7 +116,42 @@ mergeFlightsByFlightNo = (scraperResults) => {
           };
         });
       })
+    }
+
+    console.log(values)
+    this.setState({
+      searchQuery: { origin: values['origin'], destination: values['destination'], departureDate: values['departureDate'].format("YYYY-MM-DD"), airlines:values['airlines']},
+      results: [],
+      loading: new Set(),
+      failed: new Set(),
+      airlines: values['airlines']
     })
+    localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
+    const formData = new FormData();
+    formData.append("origin", values['origin'].split('-')[0].trim())
+    formData.append("destination", values['destination'].split('-')[0].trim())
+    console.log(values['departureDate'].format("YYYY-MM-DD"))
+    formData.append("date", values['departureDate'].format("YYYY-MM-DD"))
+    const requestOptions = {
+    method: 'POST',
+    body: formData
+    };
+
+    try {
+      Promise.all([
+        getAirline("united", requestOptions),
+        getAirline("aa", requestOptions),
+        getAirline("delta", requestOptions),
+        getAirline("virgin", requestOptions),
+        getAirline("jetblue", requestOptions),
+        getAirline("chase", requestOptions),
+        getAirline("alaska", requestOptions),
+        getAirline("aeroplan", requestOptions),
+
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {
@@ -302,7 +322,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           return <Alert key={name} message={`${name} loading...`} type="info" showicon banner closable size="small"/>
         })}
         {[...this.state.failed].map((name) => {
-          return <Alert key={name} message={`${name} failed to load.`} type="error" showicon banner closable size="small"/>
+          return <Alert key={name} message={`${name} failed to load (or no award tickets were found).`} type="warning" showicon banner closable size="small"/>
         })}
         <Table
           dataSource={this.state.results}
