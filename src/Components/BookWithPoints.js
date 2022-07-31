@@ -137,18 +137,9 @@ mergeFlightsByFlightNo = (scraperResults) => {
     body: formData
     };
 
+    const funcs = this.state.airlines.map(airline => getAirline(airline, requestOptions))
     try {
-      Promise.all([
-        getAirline("united", requestOptions),
-        getAirline("aa", requestOptions),
-        getAirline("delta", requestOptions),
-        getAirline("virgin", requestOptions),
-        getAirline("jetblue", requestOptions),
-        getAirline("chase", requestOptions),
-        getAirline("alaska", requestOptions),
-        getAirline("aeroplan", requestOptions),
-
-      ]);
+      Promise.all(funcs);
     } catch (err) {
       console.log(err);
     }
