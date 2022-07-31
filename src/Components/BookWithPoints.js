@@ -147,6 +147,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
         getAirline("chase", requestOptions),
         getAirline("alaska", requestOptions),
         getAirline("aeroplan", requestOptions),
+        getAirline("southwest", requestOptions),
 
       ]);
     } catch (err) {
