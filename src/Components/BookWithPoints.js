@@ -86,7 +86,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
   handleSubmit(values) {
 
     const getAirline = (x, requestOptions) => {
-      const cloudFunctionsAirlines = new Set(["united", "aa"])
+      const cloudFunctionsAirlines = new Set(["united", "aa", "alaska"])
       this.setState(({ loading }) => ({
         loading: new Set(loading).add(x)
       }));
