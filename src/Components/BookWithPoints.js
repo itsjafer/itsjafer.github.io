@@ -85,6 +85,9 @@ mergeFlightsByFlightNo = (scraperResults) => {
 
   handleSubmit(values) {
 
+    const allCombinations = (origins, destinations) => {
+      return origins.flatMap(d => destinations.map(v => v == d ? [] : [d, v]))
+    }
     const getAirline = (x, requestOptions) => {
       const cloudFunctionsAirlines = new Set(["united", "aa", "alaska"])
       this.setState(({ loading }) => ({
@@ -127,22 +130,30 @@ mergeFlightsByFlightNo = (scraperResults) => {
       airlines: values['airlines']
     })
     localStorage.setItem("searchQuery", JSON.stringify(this.state.searchQuery))
-    const formData = new FormData();
-    formData.append("origin", values['origin'].split('-')[0].trim())
-    formData.append("destination", values['destination'].split('-')[0].trim())
-    console.log(values['departureDate'].format("YYYY-MM-DD"))
-    formData.append("date", values['departureDate'].format("YYYY-MM-DD"))
-    const requestOptions = {
-    method: 'POST',
-    body: formData
-    };
+    console.log(values['origin'], values['destination'])
+    const pairs = allCombinations(values['origin'], values['destination'])
+    const pairPromises = pairs.map(pair => {
+      if (pair.length == 0) {
+        return
+      }
+      const formData = new FormData();
+      formData.append("origin", pair[0].split('-')[0].trim())
+      formData.append("destination", pair[1].split('-')[0].trim())
+      formData.append("date", values['departureDate'].format("YYYY-MM-DD"))
+      const requestOptions = {
+        method: 'POST',
+        body: formData
+      };
+      
+      const funcs = this.state.airlines.map(airline => getAirline(airline, requestOptions))
+      try {
+        Promise.all(funcs);
+      } catch (err) {
+        console.log(err);
+      }
+    })
+    Promise.all(pairPromises)
 
-    const funcs = this.state.airlines.map(airline => getAirline(airline, requestOptions))
-    try {
-      Promise.all(funcs);
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   render() {
@@ -287,6 +298,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
                 <Select
                   showSearch
                   optionFilterProp="value"
+                  mode='multiple'
                   >
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`}key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
@@ -295,6 +307,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
                 <Select
                   showSearch
                   optionFilterProp="value"
+                  mode='multiple'
                   >
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`} key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
