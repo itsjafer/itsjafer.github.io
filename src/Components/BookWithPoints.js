@@ -5,33 +5,35 @@ import airportsDb from "./airports.json"
 import "react-datepicker/dist/react-datepicker.css";
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import { Button, DatePicker, Form, Input, Table, Tag, Tooltip, Select, Alert, Typography, Divider } from 'antd';
+import { SwapOutlined } from "@ant-design/icons"
 
 import { value } from 'react-json-pretty/dist/monikai';
 const { Title, Paragraph, Text, Link } = Typography;
 const moment = moment_
 
 class BookWithPoints extends Component {
-    constructor(props) {
-        super(props);
-
-        let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin", "aa", "alaska"]
-        let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD"), airlines: airlines}
-
-        this.state = {
-          loading: new Set(),
-          failed: new Set(),
-          southwest: null,
-          united: null,
-          chase: null,
-          searchQuery: JSON.parse(localStorage.getItem("searchQuery") || JSON.stringify(defaultQuery)),
-          results: [],
-          isDesktop: false,
-          allAirlines: airlines,
-          airlines: [],
-        };
-
-        this.updatePredicate = this.updatePredicate.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+  constructor(props) {
+    super(props);
+    
+    let airlines = ["united", "delta", "aeroplan", "southwest", "jetblue", "chase", "virgin", "aa", "alaska"]
+    let defaultQuery = {origin: "ORD - Chicago", destination:"LGA - New York", departureDate: moment().add("1", "day").format("YYYY-MM-DD"), airlines: airlines}
+    
+    this.state = {
+      loading: new Set(),
+      failed: new Set(),
+      southwest: null,
+      united: null,
+      chase: null,
+      searchQuery: JSON.parse(localStorage.getItem("searchQuery") || JSON.stringify(defaultQuery)),
+      results: [],
+      isDesktop: false,
+      allAirlines: airlines,
+      airlines: [],
+    };
+    
+    this.updatePredicate = this.updatePredicate.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.formRef = React.createRef();
 
       }
 
@@ -86,6 +88,12 @@ mergeFlightsByFlightNo = (scraperResults) => {
   handleSubmit(values) {
 
     const allCombinations = (origins, destinations) => {
+      if (typeof origins === 'string') {
+        origins = [origins]
+      }
+      if (typeof destinations === 'string') {
+        destinations = [destinations]
+      }
       return origins.flatMap(d => destinations.map(v => v == d ? [] : [d, v]))
     }
     const getAirline = (x, requestOptions) => {
@@ -231,7 +239,6 @@ mergeFlightsByFlightNo = (scraperResults) => {
         dataIndex: "departureDateTime",
         render: (text) => moment(text).format("h:mm A"),
         sorter: (recordA, recordB) => moment(recordA.departureDateTime).diff(moment(recordB.departureDateTime)),
-        defaultSortOrder: "ascend",
       },
       {
         title: "Arrival",
@@ -267,6 +274,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           const fareBMiles = ((lowestFare(recordB.fares, column.key)?.miles) + (lowestFare(recordB.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
           return fareAMiles - fareBMiles
         },
+        sortOrder: 'ascend'
       }))
     ]
 
@@ -292,6 +300,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
             onFinish={(values) => this.handleSubmit(values)}
             autoComplete="on"
             layout={this.state.isDesktop ? "inline" : "vertical"} 
+            ref={this.formRef}
             >
             <Form.Item name="origin" rules={[{required: true}]} style={this.state.isDesktop ? { width: 200, marginRight: 5, marginBottom: 0} : { width: "100%", marginRight: 5, marginBottom: 0 }}>
                 {/* <Input placeholder='origin'/> */}
@@ -303,6 +312,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
                   { airportsDb.map(airport => airport.IATA.length == 3 ? <Select.Option value={`${airport.IATA} - ${airport.city}`}key={airport.IATA}>{airport.IATA} - {airport.city}</Select.Option> : null)}
                 </Select>
             </Form.Item>
+            <Button icon={<SwapOutlined />} size="small" style={{ marginRight: 5, marginTop: 5, marginBottom:5 }} onClick={() => {this.formRef.current.setFieldsValue({ origin: this.formRef.current.getFieldValue("destination"), destination: this.formRef.current.getFieldValue("origin") }) }} />
             <Form.Item name="destination" rules={[{required: true}]} style={this.state.isDesktop ? { width: 200, marginRight: 5, marginBottom: 0} : { width: "100%", marginRight: 5, marginBottom: 0 }}>
                 <Select
                   showSearch
