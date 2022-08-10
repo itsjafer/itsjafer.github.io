@@ -324,7 +324,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
             </Form.Item>
             <Form.Item name="departureDate" style = {{marginBottom: 0, marginRight: 5}}><DatePicker style= {this.state.isDesktop ? { width: 200} : { width: "100%"}} disabledDate={(current) => current.isBefore(moment().subtract(1, "day"))} allowClear={false} /></Form.Item>
             <Form.Item name="airlines" rules={[{required: true}]} style={{ marginRight: 5, marginBottom: 0 }}>
-              <Select listHeight={300} maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 250} : { width: "100%"}}  >
+              <Select listHeight={300} maxTagCount={"responsive"} mode="multiple" style={this.state.isDesktop ? { width: 200} : { width: "100%"}}  >
                 {this.state.allAirlines.map(airline => <Select.Option key={airline} value={airline}>{airline}</Select.Option>)}
               </Select>
             </Form.Item>
