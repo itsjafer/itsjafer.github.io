@@ -273,8 +273,7 @@ mergeFlightsByFlightNo = (scraperResults) => {
           const fareAMiles = ((lowestFare(recordA.fares, column.key)?.miles) + (lowestFare(recordA.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
           const fareBMiles = ((lowestFare(recordB.fares, column.key)?.miles) + (lowestFare(recordB.fares, column.key)?.cash * 100)) ?? Number.MAX_VALUE
           return fareAMiles - fareBMiles
-        },
-        sortOrder: 'ascend'
+        }
       }))
     ]
 
