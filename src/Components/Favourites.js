@@ -155,6 +155,7 @@ class Favourites extends Component {
             <li>Top Gun (2022)</li>
             <li>Nope (2022)</li>
             <li>The Black Phone (2022)</li>
+            <li>Bodies Bodies Bodies (2022)</li>
           </ul>
         </div>
         <div className="shows">
