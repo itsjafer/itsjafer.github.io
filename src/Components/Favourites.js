@@ -221,8 +221,10 @@ class Favourites extends Component {
             <li>Ted Lasso (2020-)</li>
             <li>Invincible (2021-)</li>
             <li>Loki (2021-)</li>
+            <li>Only Murders in the Building (2021)</li>
             <li>WandaVision (2021)</li>
             <li>Severance (2022)</li>
+            <li>Mo (2022)</li>
           </ul>
         </div>
 
