@@ -225,6 +225,7 @@ class Favourites extends Component {
             <li>WandaVision (2021)</li>
             <li>Severance (2022)</li>
             <li>Mo (2022)</li>
+            <li>The Dropout (2022)</li>
           </ul>
         </div>
 
