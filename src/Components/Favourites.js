@@ -214,6 +214,7 @@ class Favourites extends Component {
             <li>The Witcher (2019-)</li>
             <li>Watchmen (2019-)</li>
             <li>Dead to Me (2019-)</li>
+            <li>Ramy (2019-)</li>
             <li>The Last Dance (2020)</li>
             <li>Upload (2020-)</li>
             <li>Mrs. America (2020)</li>
@@ -222,6 +223,7 @@ class Favourites extends Component {
             <li>Ted Lasso (2020-)</li>
             <li>Invincible (2021-)</li>
             <li>Loki (2021-)</li>
+            <li>Inside Job (2021-)</li>
             <li>Only Murders in the Building (2021)</li>
             <li>WandaVision (2021)</li>
             <li>Severance (2022)</li>

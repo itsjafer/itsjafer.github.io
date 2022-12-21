@@ -8,10 +8,7 @@ class Schedule extends Component {
     return (
       <div>
         <p>
-          I am currently in my
-          <b> 5B</b>
-          {' '}
-          term.
+          I graduated in Fall 2021!
         </p>
         <div className="schedule">
           <div className="year">

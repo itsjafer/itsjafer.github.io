@@ -20,6 +20,7 @@ import {Blog, BlogEntry} from './Components/Blog';
 import Trader from './Components/Trader';
 import Loonie from './Components/Loonie/Loonie';
 import BookWithPoints from './Components/BookWithPoints';
+import HalalFood from './Components/HalalFood';
 
 ReactGA.initialize('UA-123367662-1');
 
@@ -51,6 +52,7 @@ class Main extends Component {
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
                 <NavLink to="/points">BookWithPoints</NavLink>
+                <NavLink to="/halal">Halal Food Chicago</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Jailbreak Repo</a>
                 </div>
               </div></li>
@@ -73,6 +75,7 @@ class Main extends Component {
             <Route path="/parser" component={withTracker(Parser)} />
             <Route path="/trader" component={withTracker(Trader)} />
             <Route path="/points" component={withTracker(BookWithPoints)} />
+            <Route path="/halal" component={withTracker(HalalFood)} />
           </div>
         </div>
       </HashRouter>
