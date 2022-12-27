@@ -229,6 +229,7 @@ class Favourites extends Component {
             <li>Severance (2022)</li>
             <li>Mo (2022)</li>
             <li>The Dropout (2022)</li>
+            <li>The Bear (2022)</li>
           </ul>
         </div>
 
