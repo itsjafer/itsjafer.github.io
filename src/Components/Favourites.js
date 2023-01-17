@@ -222,6 +222,7 @@ class Favourites extends Component {
             <li>Solar Opposites (2020-)</li>
             <li>Ted Lasso (2020-)</li>
             <li>Invincible (2021-)</li>
+            <li>The White Lotus (2021-)</li>
             <li>Loki (2021-)</li>
             <li>Inside Job (2021-)</li>
             <li>Only Murders in the Building (2021)</li>
