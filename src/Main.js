@@ -51,7 +51,6 @@ class Main extends Component {
                 <NavLink to="/blog">Blog</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
-                <NavLink to="/points">BookWithPoints</NavLink>
                 <NavLink to="/halal">Halal Food Chicago</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Jailbreak Repo</a>
                 </div>
