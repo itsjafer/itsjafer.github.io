@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import AudioPlayer from 'react-h5-audio-player'; 
 import 'react-h5-audio-player/lib/styles.css';
+import 'tajweed/css/tajweed.css'  
+import tajweed, {Tajweed}  from 'tajweed';
 class Quran extends Component {
 
   constructor(props) {
@@ -13,9 +15,11 @@ class Quran extends Component {
       translation: "en.walk",
       isTranslation: false,
       surahs: [],
+      surahsTajweed: [],
       format: "audio",
       translationFormat: "audio",
       playBismillah: false,
+      showTajweed: true,
     };
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -29,6 +33,13 @@ class Quran extends Component {
         this.setState({surahs: json['data']["surahs"]})
       })
 
+    let tajweedMetadata = `https://api.alquran.cloud/v1/quran/quran-tajweed`
+    fetch(encodeURI(tajweedMetadata), { method: 'get', mode: 'cors' })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({surahsTajweed: json['data']["surahs"]})
+      })
+    
     let reciterMetadata = `https://api.alquran.cloud/v1/edition?format=audio&type=versebyverse`
     fetch(encodeURI(reciterMetadata), { method: 'get', mode: 'cors' })
       .then((response) => response.json())
@@ -160,7 +171,7 @@ class Quran extends Component {
 
   render() {
   
-    const {isTranslation, reciter, translation, totalVerseNumber, surahs, reciters, format} = this.state
+    const {isTranslation, reciter, translation, totalVerseNumber, surahs, surahsTajweed, reciters, format} = this.state
 
     const highestBitrates = {
       "ar.abdulbasitmurattal": 192,
@@ -212,6 +223,7 @@ class Quran extends Component {
         return json.map(word => `${word["word_arabic"]}`).join(' ')
     }
 
+    let parseTajweed = new Tajweed()
 
     return (
       <div>
@@ -250,8 +262,8 @@ class Quran extends Component {
           // Try other props!
         />
         <br/>
-        <div className='translation'>
-        {surahs[Number(this.state.chapterNumber) - 1] && surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && formatWordByWord(surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true)}
+        <div className='translation' onClickCapture={() => this.setState({showTajweed: !this.state.showTajweed})}>
+        {this.state.showTajweed ? surahsTajweed[Number(this.state.chapterNumber) - 1] && surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] &&  <div dangerouslySetInnerHTML={{__html:parseTajweed.parse(surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true) }}></div> : surahs[Number(this.state.chapterNumber) - 1] && surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && formatWordByWord(surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true)}
         </div>
         </div>
       </div>
