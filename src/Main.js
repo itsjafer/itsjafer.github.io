@@ -48,7 +48,6 @@ class Main extends Component {
                 <div class="dropdown">
                 <label class="dropbtn">Projects</label>
                 <div class="dropdown-content">
-                <NavLink to="/blog">Blog</NavLink>
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
                 <NavLink to="/halal">Halal Food Chicago</NavLink>
