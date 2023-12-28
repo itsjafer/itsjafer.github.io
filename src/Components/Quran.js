@@ -198,7 +198,7 @@ class Quran extends Component {
         />
         <br/>
         <div className='translation'>
-        {surahs[Number(this.state.chapterNumber) - 1] && formatWordByWord(surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber]["text"], true)}
+        {surahs[Number(this.state.chapterNumber) - 1] && formatWordByWord(surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true)}
         </div>
         </div>
       </div>
