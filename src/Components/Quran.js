@@ -19,7 +19,7 @@ class Quran extends Component {
       format: "audio",
       translationFormat: "audio",
       playBismillah: false,
-      showTajweed: true,
+      showTajweed: false,
     };
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -223,6 +223,15 @@ class Quran extends Component {
         return json.map(word => `${word["word_arabic"]}`).join(' ')
     }
 
+    let tajweedWords = (tajweedText, translationText, includeEnglish) => {
+      if (!includeEnglish) {
+        return tajweedText
+      }
+      let tajweedWordsList = tajweedText.split(" ")
+      let translated = JSON.parse(translationText)
+      return tajweedWordsList.map((word, index) => `${word} (${[translated[index]["word_translation"]]})`).join(' ')
+    }
+
     let parseTajweed = new Tajweed()
 
     return (
@@ -262,8 +271,32 @@ class Quran extends Component {
           // Try other props!
         />
         <br/>
-        <div className='translation' onClickCapture={() => this.setState({showTajweed: !this.state.showTajweed})}>
-        {this.state.showTajweed ? surahsTajweed[Number(this.state.chapterNumber) - 1] && surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] &&  <div dangerouslySetInnerHTML={{__html:parseTajweed.parse(surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true) }}></div> : surahs[Number(this.state.chapterNumber) - 1] && surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && formatWordByWord(surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], true)}
+        <div className='translation'>
+          <div className='subtitle' onClickCapture={() => this.setState({showTajweed: !this.state.showTajweed})}>
+            {this.state.showTajweed ? "Tap to remove translation" : "Tap to add word-by-word translation"}
+          </div>
+
+        {this.state.showTajweed ? 
+        surahs[Number(this.state.chapterNumber) - 1] && 
+        surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
+        surahsTajweed[Number(this.state.chapterNumber) - 1] && 
+        surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
+        <div dangerouslySetInnerHTML={{__html:parseTajweed.parse(
+          tajweedWords(
+            surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
+            surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
+            true), true) }}></div> 
+        : 
+        surahs[Number(this.state.chapterNumber) - 1] && 
+        surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
+        surahsTajweed[Number(this.state.chapterNumber) - 1] && 
+        surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
+        <div dangerouslySetInnerHTML={{__html:parseTajweed.parse(
+          tajweedWords(surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
+          surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
+          false), true) }}>
+        </div> 
+        }
         </div>
         </div>
       </div>
