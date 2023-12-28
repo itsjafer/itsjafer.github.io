@@ -35,6 +35,13 @@ h1 {
 b {
   font-weight: 400;
 }
+.translation {
+  direction: rtl;
+  height: 100%;
+  margin-bottom: 0.5em;
+  font-size: 2em;
+  font-weight: 50;
+}
 h2 {
   height: 100%;
   margin-bottom: 0.5em;

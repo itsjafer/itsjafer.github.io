@@ -21,6 +21,7 @@ import Trader from './Components/Trader';
 import Loonie from './Components/Loonie/Loonie';
 import BookWithPoints from './Components/BookWithPoints';
 import HalalFood from './Components/HalalFood';
+import Quran from './Components/Quran';
 
 ReactGA.initialize('UA-123367662-1');
 
@@ -42,7 +43,6 @@ class Main extends Component {
             <ul className="header">
               <li><NavLink exact to="/">Home</NavLink></li>
               <li><NavLink exact to="/resume">Resume</NavLink></li>
-              <li><NavLink to="/favourites">Things I Love</NavLink></li>
               <li><NavLink to="/schedule">Coursework</NavLink></li>
               <li>
                 <div class="dropdown">
@@ -52,6 +52,7 @@ class Main extends Component {
                 <NavLink to="/parser">Resume Parser</NavLink>
                 <NavLink to="/schwab">Schwab Trader</NavLink>
                 <NavLink to="/halal">Halal Food Chicago</NavLink>
+                <NavLink to="/quran">Quran</NavLink>
                 <a href="https://itsjafer.com/repo" target="_blank" rel="noopener noreferrer">Jailbreak Repo</a>
                 </div>
               </div></li>
@@ -75,6 +76,7 @@ class Main extends Component {
             <Route path="/trader" component={withTracker(Trader)} />
             <Route path="/points" component={withTracker(BookWithPoints)} />
             <Route path="/halal" component={withTracker(HalalFood)} />
+            <Route path="/quran" component={withTracker(Quran)} />
           </div>
         </div>
       </HashRouter>

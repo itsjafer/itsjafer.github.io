@@ -30,6 +30,7 @@
     "react-fade-in": "^2.0.1",
     "react-ga": "^2.7.0",
     "react-grid-system": "^4.4.11",
+    "react-h5-audio-player": "^3.9.0",
     "react-helmet": "^6.1.0",
     "react-highcharts": "^16.1.0",
     "react-image": "^4.0.1",
