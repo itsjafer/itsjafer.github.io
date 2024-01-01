@@ -136,6 +136,7 @@ class Quran extends Component {
         translationFormat: localStorage.getItem('translationFormat') || "audio",
         translatorName: localStorage.getItem('translatorName') || "Ibrahim Walk",
         reciterName: localStorage.getItem('reciterName') || "Alafasy",
+        showTajweed: localStorage.getItem('showtajweed') || false,
       })
   }
 
@@ -176,7 +177,7 @@ class Quran extends Component {
     localStorage.setItem('translationFormat', this.state.translationFormat)
     localStorage.setItem('translatorName', this.state.translatorName)
     localStorage.setItem('reciterName', this.state.reciterName)
-
+    localStorage.setItem('showtajweed', this.state.showTajweed)
   }
 
   render() {
