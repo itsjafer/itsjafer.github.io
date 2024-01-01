@@ -58,7 +58,7 @@ tajweed[data-description]:hover:after {
   content: attr(data-description);
   padding: 4px 8px;
   color: #333;
-  position: absolute;
+  position: relative;
   left: 0;
   top: 100%;
   z-index: 20;

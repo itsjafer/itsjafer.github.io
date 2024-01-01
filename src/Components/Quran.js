@@ -3,6 +3,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import 'tajweed/css/tajweed.css'  
 import tajweed, {Tajweed}  from 'tajweed';
+import {Helmet} from "react-helmet";
 class Quran extends Component {
 
   constructor(props) {
@@ -20,6 +21,9 @@ class Quran extends Component {
       translationFormat: "audio",
       playBismillah: false,
       showTajweed: false,
+      surahName: "",
+      translatorName: "Alafasy",
+      reciterName: "Ibrahim Walk"
     };
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -124,11 +128,14 @@ class Quran extends Component {
       this.setState({
         chapterNumber: localStorage.getItem('chapterNumber') || 1,
         reciter: localStorage.getItem('reciter') || "ar.alafasy",
+        surahName: localStorage.getItem('surahname') || "Al-Fatihah",
         translation: localStorage.getItem('translation') || "en.walk",
         verseNumber: localStorage.getItem('verseNumber') || 0,
         totalVerseNumber: localStorage.getItem('totalVerseNumber') || 0,
         format: localStorage.getItem('format') || "audio",
         translationFormat: localStorage.getItem('translationFormat') || "audio",
+        translatorName: localStorage.getItem('translatorName') || "Ibrahim Walk",
+        reciterName: localStorage.getItem('reciterName') || "Alafasy",
       })
   }
 
@@ -159,6 +166,7 @@ class Quran extends Component {
       })
     }
     localStorage.setItem('chapterNumber', this.state.chapterNumber)
+    localStorage.setItem('surahname', this.state.surahName)
     localStorage.setItem('verseNumber', this.state.verseNumber)
     localStorage.setItem('totalVerseNumber', this.state.totalVerseNumber)
     localStorage.setItem('reciter', this.state.reciter)
@@ -166,6 +174,8 @@ class Quran extends Component {
     localStorage.setItem('isTranslation', this.state.isTranslation)
     localStorage.setItem('format', this.state.format)
     localStorage.setItem('translationFormat', this.state.translationFormat)
+    localStorage.setItem('translatorName', this.state.translatorName)
+    localStorage.setItem('reciterName', this.state.reciterName)
 
   }
 
@@ -229,6 +239,10 @@ class Quran extends Component {
       }
       let tajweedWordsList = tajweedText.split(" ")
       let translated = JSON.parse(translationText)
+
+      if (tajweedWordsList.length != translated.length) {
+        return tajweedText
+      }
       return tajweedWordsList.map((word, index) => `${word} (${[translated[index]["word_translation"]]})`).join(' ')
     }
 
@@ -236,27 +250,32 @@ class Quran extends Component {
 
     return (
       <div>
-        <p>This is a nice, simple Quran player that allows you to listen to the Quran while choosing between Arabic reciters and non-Arabic translations interchangeably.</p>
+        <Helmet>
+          <title>{`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}</title>
+          <meta name="description" content={`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}/>
+          <link rel="canonical" href="http://itsjafer.com/#/parser" />
+        </Helmet>
+        <p>A Qur'an player that allows interlacing of Arabic and Non-Arabic translation audio. Also includes tajweed color-coding and word-by-word translations.</p>
         
         <div className="Resume">
         {/* <p>Reciter:</p> */}
-        <select value={this.state.reciter} onChange={(e)=> {this.setState({reciter: e.target.value, format: e.target.selectedOptions[0].getAttribute('audioformat')}); }}>
+        <select value={this.state.reciter} onChange={(e)=> {this.setState({reciterName: e.target.selectedOptions[0].getAttribute('recitername'),reciter: e.target.value, format: e.target.selectedOptions[0].getAttribute('audioformat')}); }}>
         {
-          reciters && reciters.map(option => <option key={option['identifier']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
+          reciters && reciters.map(option => <option key={option['identifier']} recitername={option['englishName']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
         }
         </select>
         {/* <p>Translation:</p> */}
-        <select value={this.state.translation} onChange={(e)=> {  this.setState({translation: e.target.value, translationFormat: e.target.selectedOptions[0].getAttribute('audioformat')}); } }>
+        <select value={this.state.translation} onChange={(e)=> {  this.setState({translatorName: e.target.selectedOptions[0].getAttribute('translatorname'), translation: e.target.value, translationFormat: e.target.selectedOptions[0].getAttribute('audioformat')}); } }>
         {
-          reciters && reciters.map(option => option['language'] !== "ar" && <option key={option['identifier']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
+          reciters && reciters.map(option => option['language'] !== "ar" && <option key={option['identifier']} translatorname={option['englishName']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
         }
         {
           <option key="none" audioformat="none" value="none">None</option>
         }
         </select>
         {/* <p>Chapter:</p> */}
-        <select value={this.state.chapterNumber} onChange={(e)=> {this.setState({chapterNumber: e.target.value, verseNumber: 1, totalVerseNumber: surahs[Number(e.target.value) - 1]["ayahs"][0]["number"], isTranslation: false })}}>
-        {surahs && surahs.map(option => <option key={option["number"]} value={option["number"]}>{option["number"]}: {option["englishName"]}</option>)}
+        <select value={this.state.chapterNumber} onChange={(e)=> {this.setState({chapterNumber: e.target.value, verseNumber: 1, totalVerseNumber: surahs[Number(e.target.value) - 1]["ayahs"][0]["number"], isTranslation: false , surahName: e.target.selectedOptions[0].getAttribute("surahname")})}}>
+        {surahs && surahs.map(option => <option key={option["number"]} surahname={option["englishName"]} value={option["number"]}>{option["number"]}: {option["englishName"]}</option>)}
         </select>
         {/* <p>Verse:</p> */}
         <select value={this.state.totalVerseNumber} onChange={(e)=> { this.setState({totalVerseNumber: e.target.value, verseNumber: e.target.selectedOptions[0].getAttribute("surahnumber"), isTranslation: false });}}>
@@ -268,6 +287,8 @@ class Quran extends Component {
           volume={0.5}
           onEnded={this.handleEnd}
           onError={this.handleEnd}
+          onClickNext={this.skipAhead}
+          onClickPrevious={this.skipPrevious}
           // Try other props!
         />
         <br/>
