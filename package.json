@@ -11,7 +11,7 @@
     "highlightjs": "^9.16.2",
     "knope": "^1.1.2",
     "load-script": "^1.0.0",
-    "markdown-it": "^8.4.2",
+    "markdown-it": "^12.3.2",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-mathjax": "^2.0.0",
