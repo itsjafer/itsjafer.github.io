@@ -23,7 +23,8 @@ class Quran extends Component {
       showTajweed: false,
       surahName: "",
       translatorName: "Alafasy",
-      reciterName: "Ibrahim Walk"
+      reciterName: "Ibrahim Walk",
+      fullscreen: false
     };
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -249,16 +250,8 @@ class Quran extends Component {
 
     let parseTajweed = new Tajweed()
 
-    return (
+    let options = (
       <div>
-        <Helmet>
-          <title>{`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}</title>
-          <meta name="description" content={`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}/>
-          <link rel="canonical" href="http://itsjafer.com/#/parser" />
-        </Helmet>
-        <p>A Qur'an player that allows interlacing of Arabic and Non-Arabic translation audio. Also includes tajweed color-coding and word-by-word translations.</p>
-        
-        <div className="Resume">
         {/* <p>Reciter:</p> */}
         <select value={this.state.reciter} onChange={(e)=> {this.setState({reciterName: e.target.selectedOptions[0].getAttribute('recitername'),reciter: e.target.value, format: e.target.selectedOptions[0].getAttribute('audioformat')}); }}>
         {
@@ -268,7 +261,7 @@ class Quran extends Component {
         {/* <p>Translation:</p> */}
         <select value={this.state.translation} onChange={(e)=> {  this.setState({translatorName: e.target.selectedOptions[0].getAttribute('translatorname'), translation: e.target.value, translationFormat: e.target.selectedOptions[0].getAttribute('audioformat')}); } }>
         {
-          reciters && reciters.map(option => option['language'] !== "ar" && <option key={option['identifier']} translatorname={option['englishName']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
+          reciters && reciters.map(option => <option key={option['identifier']} translatorname={option['englishName']} audioformat={option['format']} value={option['identifier']}>{regionNamesInEnglish.of(option["language"])}: {option["englishName"]}</option> )
         }
         {
           <option key="none" audioformat="none" value="none">None</option>
@@ -282,6 +275,23 @@ class Quran extends Component {
         <select value={this.state.totalVerseNumber} onChange={(e)=> { this.setState({totalVerseNumber: e.target.value, verseNumber: e.target.selectedOptions[0].getAttribute("surahnumber"), isTranslation: false });}}>
         {surahs && surahs[Number(this.state.chapterNumber) - 1] && surahs[Number(this.state.chapterNumber) - 1]["ayahs"].map(option => <option key={option["number"]} surahnumber={Number(option["numberInSurah"])} value={Number(option["number"])}>{option["numberInSurah"]}: {formatWordByWord(option["text"], false)}</option>)}
         </select>
+      </div>
+    )
+
+    return (
+      <div>
+        <Helmet>
+          <title>{`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}</title>
+          <meta name="description" content={`Quran - ${this.state.surahName} - ${this.state.isTranslation ? this.state.translatorName : this.state.reciterName}`}/>
+          <link rel="canonical" href="http://itsjafer.com/#/parser" />
+        </Helmet>
+
+        {!this.state.fullscreen && <p>A Qur'an player that allows interlacing of Arabic and Non-Arabic translation audio. Also includes tajweed color-coding and word-by-word translations.</p>}
+        
+        <div className="Resume">
+        
+        {!this.state.fullscreen && options}
+
         <AudioPlayer
           // autoPlay
           src={isTranslation ? translationSRC : arabicSRC}
@@ -296,6 +306,9 @@ class Quran extends Component {
         <div className='translation'>
           <div className='subtitle' onClickCapture={() => this.setState({showTajweed: !this.state.showTajweed})}>
             {this.state.showTajweed ? "Tap to remove translation" : "Tap to add word-by-word translation"}
+          </div>
+          <div className='subtitle' onClickCapture={() => this.setState({fullscreen: !this.state.fullscreen})}>
+            {!this.state.fullscreen ? "Tap to hide options" : "Tap to show options"}
           </div>
 
         {this.state.showTajweed ? 
