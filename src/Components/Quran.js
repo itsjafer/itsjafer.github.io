@@ -30,23 +30,36 @@ class Quran extends Component {
 
   }
 
+  fetchPlus = (url, options = {}, retries) =>
+  fetch(url, options)
+    .then(res => {
+      if (res.ok) {
+        return res
+      }
+      if (retries > 0) {
+        return this.fetchPlus(url, options, retries - 1)
+      }
+      throw new Error(res.status)
+    })
+    .catch(error => console.error(error.message))
+
   componentDidMount() {
     let quranMetadata = `https://api.alquran.cloud/v1/quran/quran-wordbyword-2`
-    fetch(encodeURI(quranMetadata), { method: 'get', mode: 'cors' })
+    this.fetchPlus(encodeURI(quranMetadata), { method: 'get', mode: 'cors' }, 3)
       .then((response) => response.json())
       .then((json) => {
         this.setState({surahs: json['data']["surahs"]})
       })
 
     let tajweedMetadata = `https://api.alquran.cloud/v1/quran/quran-tajweed`
-    fetch(encodeURI(tajweedMetadata), { method: 'get', mode: 'cors' })
+    this.fetchPlus(encodeURI(tajweedMetadata), { method: 'get', mode: 'cors' }, 3)
       .then((response) => response.json())
       .then((json) => {
         this.setState({surahsTajweed: json['data']["surahs"]})
       })
     
     let reciterMetadata = `https://api.alquran.cloud/v1/edition?format=audio&type=versebyverse`
-    fetch(encodeURI(reciterMetadata), { method: 'get', mode: 'cors' })
+    this.fetchPlus(encodeURI(reciterMetadata), { method: 'get', mode: 'cors' }, 3)
       .then((response) => response.json())
       .then((json) => {
         let staticReciters = [
@@ -152,12 +165,11 @@ class Quran extends Component {
       
       // Check if next verse exists. If it does, increment verse. Otherwise, increment chapter.
       let quranAPI = `https://api.alquran.cloud/v1/ayah/${this.state.chapterNumber}:${Number(this.state.verseNumber) + 1}`
-      fetch(encodeURI(quranAPI), { method: 'get', mode: 'cors' })
+      this.fetchPlus(encodeURI(quranAPI), { method: 'get', mode: 'cors' }, 3)
       .then((response) => response.json())
       .then((json) => {
         if (json["code"] == 404) {
           let nextChapterNumber = Number(this.state.chapterNumber) + 1
-          console.log(nextChapterNumber)
           if (nextChapterNumber == 115) {
             nextChapterNumber = 1
           }
@@ -214,9 +226,6 @@ class Quran extends Component {
       "ar.ibrahimakhbar": 32
     }
     
-    console.log(totalVerseNumber, this.state.verseNumber)
-    console.log(reciter, format)
-    console.log(translation, this.state.translationFormat)
     let arabicSRC = `https://everyayah.com/data/${reciter}/${this.state.playBismillah ? "001001" : String(this.state.chapterNumber).padStart(3, '0')+String(this.state.verseNumber).padStart(3, '0')}.mp3`
     if (this.state.format === "audio") {
       arabicSRC = `https://cdn.islamic.network/quran/audio/${highestBitrates[reciter]}/${reciter}/${this.state.playBismillah ? 1 : totalVerseNumber}.mp3`
@@ -227,6 +236,10 @@ class Quran extends Component {
     }
     const regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
 
+    let formatWordsByDiv = (text) => {
+      let json = JSON.parse(text)
+      return json.map(word => <div className='arabicWord' data-value={word["word_translation"]}>{word["word_arabic"]}</div>)
+    }
     let formatWordByWord = (text, includeEnglish) => {
       let json = JSON.parse(text)
       if (includeEnglish) {
@@ -245,7 +258,9 @@ class Quran extends Component {
       if (tajweedWordsList.length != translated.length) {
         return tajweedText
       }
-      return tajweedWordsList.map((word, index) => `${word} (${[translated[index]["word_translation"]]})`).join(' ')
+      console.log(tajweedWordsList.map((word, index) => `<div class='arabicWord' data-value='${translated[index]["word_translation"]}'>${word}</div>`).join(' '))
+      return tajweedWordsList.map((word, index) => `<span class='arabicWord' data-value='${translated[index]["word_translation"]}'>${word}</span>`).join(' ')
+      // return tajweedWordsList.map((word, index) => `${word} (${[translated[index]["word_translation"]]})`).join(' ')
     }
 
     let parseTajweed = new Tajweed()
@@ -293,9 +308,9 @@ class Quran extends Component {
         {!this.state.fullscreen && options}
 
         <AudioPlayer
-          // autoPlay
+          autoPlay
           src={isTranslation ? translationSRC : arabicSRC}
-          volume={0.5}
+          volume={1}
           onEnded={this.handleEnd}
           onError={this.handleEnd}
           onClickNext={this.skipAhead}
