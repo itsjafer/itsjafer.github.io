@@ -41,7 +41,6 @@ class Quran extends Component {
       }
       throw new Error(res.status)
     })
-    .catch(error => console.error(error.message))
 
   componentDidMount() {
     let quranMetadata = `https://api.alquran.cloud/v1/quran/quran-wordbyword-2`
@@ -178,6 +177,14 @@ class Quran extends Component {
           this.setState({isTranslation: false, totalVerseNumber: Number(this.state.totalVerseNumber) + 1, verseNumber: Number(this.state.verseNumber) + 1})
         }
       })
+      .catch(error => {
+        console.log(error)
+        let nextChapterNumber = Number(this.state.chapterNumber) + 1
+        if (nextChapterNumber == 115) {
+          nextChapterNumber = 1
+        }
+        this.setState({playBismillah: true, isTranslation: false, chapterNumber: nextChapterNumber, verseNumber: 1, totalVerseNumber: Number(this.state.totalVerseNumber) + 1})
+      })
     }
     localStorage.setItem('chapterNumber', this.state.chapterNumber)
     localStorage.setItem('surahname', this.state.surahName)
@@ -248,6 +255,8 @@ class Quran extends Component {
         return json.map(word => `${word["word_arabic"]}`).join(' ')
     }
 
+    let parseTajweed = new Tajweed()
+
     let tajweedWords = (tajweedText, translationText, includeEnglish) => {
       if (!includeEnglish) {
         return tajweedText
@@ -258,12 +267,10 @@ class Quran extends Component {
       if (tajweedWordsList.length != translated.length) {
         return tajweedText
       }
-      console.log(tajweedWordsList.map((word, index) => `<div class='arabicWord' data-value='${translated[index]["word_translation"]}'>${word}</div>`).join(' '))
-      return tajweedWordsList.map((word, index) => `<span class='arabicWord' data-value='${translated[index]["word_translation"]}'>${word}</span>`).join(' ')
+      return tajweedWordsList.map((word, index) => `<span class='arabicWord' data-value='${translated[index]["word_translation"]}'>${parseTajweed.parse(word,true)}</span>`).join(' ')
       // return tajweedWordsList.map((word, index) => `${word} (${[translated[index]["word_translation"]]})`).join(' ')
     }
 
-    let parseTajweed = new Tajweed()
 
     let options = (
       <div>
@@ -331,11 +338,11 @@ class Quran extends Component {
         surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
         surahsTajweed[Number(this.state.chapterNumber) - 1] && 
         surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 
-        <div dangerouslySetInnerHTML={{__html:parseTajweed.parse(
+        <div dangerouslySetInnerHTML={{__html:
           tajweedWords(
             surahsTajweed[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
             surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1]["text"], 
-            true), true) }}></div> 
+            true) }}></div> 
         : 
         surahs[Number(this.state.chapterNumber) - 1] && 
         surahs[Number(this.state.chapterNumber) - 1]["ayahs"][this.state.verseNumber-1] && 

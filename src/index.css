@@ -62,17 +62,7 @@ b {
   top: 1em;
   z-index: 20;
   font-size: 0.5em;
-}
-tajweed {
-  display: inline-block;
-}
-tajweed[data-description]:hover:before {
-  content: attr(data-description);
-  text-align: center;
-  display: block;
-  top: -1em;
-  z-index: 20;
-  font-size: 0.5em;
+  font-weight: 400;
 }
 h2 {
   height: 100%;
