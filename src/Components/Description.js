@@ -44,7 +44,7 @@ function getVoice(str) {
         let check = elem
         voice.forEach(elem1 => {
             if(elem1[0] == check) {
-                ret = elem1[1]
+                ret = elem1[1] + "/n"
             }
         })
     })
